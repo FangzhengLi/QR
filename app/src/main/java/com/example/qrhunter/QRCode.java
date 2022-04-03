@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.ArrayList;
 
 public class QRCode {
@@ -8,7 +10,7 @@ public class QRCode {
     private Boolean sharedLocation;
     private Boolean sharedPicture;
     private String comment;
-    private String location;
+    private GeoPoint geoPoint;
     ArrayList<String> scanners;
 
     public QRCode() {}
@@ -35,7 +37,7 @@ public class QRCode {
         this.sharedLocation = false;
         this.sharedPicture = false;
         this.comment = "";
-        this.location = "";
+        this.geoPoint =null;
         this.scanners = new ArrayList<String>();
     }
 
@@ -65,12 +67,12 @@ public class QRCode {
         return comment;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
     }
 
-    public String getLocation() {
-        return location;
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
     }
 
     public void setScanners(ArrayList<String> scanners) {
