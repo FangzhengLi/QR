@@ -83,7 +83,7 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    String comment = document.getString("Comment");
+                    String comment = document.getString("comment");
                     if (comment != null) {
                         TextView textView = findViewById(R.id.txtAllComments);
                         textView.setText(comment);
@@ -119,7 +119,7 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     HashMap<String, String> data = new HashMap<>();
-                    data.put("Comment", textView.getText().toString());
+                    data.put("comment", textView.getText().toString());
                     docCodeRef.set(data, SetOptions.merge());
                     Log.d(TAG, "User documents write success. ");
                 } else {

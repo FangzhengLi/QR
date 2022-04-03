@@ -80,7 +80,8 @@ public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
         positionid = getIntent().getStringExtra("strqrid");
         Log.d(TAG,"得到的信息xxxxxxxxxxx"+positionid);
 
-        DocumentReference docUserRef = locationRef.document(positionid);
+        HashScore hashScore = new HashScore();
+        DocumentReference docUserRef = locationRef.document(hashScore.hash256(positionid));
         docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -93,10 +94,6 @@ public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
             }
         });
-
-
-
-
 
         locationRef
                 .whereEqualTo("shareLocation", true)

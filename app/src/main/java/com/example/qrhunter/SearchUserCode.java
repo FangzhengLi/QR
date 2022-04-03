@@ -107,7 +107,7 @@ public class SearchUserCode extends AppCompatActivity {
                                     FirebaseFirestoreException error) {
 //                                boolean exit = false;
 //                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-//                                    String ID = doc.getId();
+//                                    String ID = doc.getString("qrid");
 //                                    Intent intent=new Intent(SearchUserCode.this,SelectedSearchUserQr.class);
 //                                    intent.putExtra("qrid",userstr);
 //                                    intent.putExtra("index", i);
@@ -117,7 +117,7 @@ public class SearchUserCode extends AppCompatActivity {
 //                                    startActivity(intent);}
                                 boolean exit = false;
                                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                    String ID = doc.getId();
+                                    String ID = doc.getString("qrid");
                                     if (ID.equals(userstr)) {
                                         exit = true;
                                     }

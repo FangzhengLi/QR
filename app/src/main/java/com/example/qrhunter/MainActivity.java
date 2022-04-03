@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SharedData appData = (SharedData) getApplication();
                 if (!(addCode)) {
                     CollectionReference usersRef = db.collection("Users");
-                    DocumentReference docUserRef = usersRef.document(result.getContents());
+                    DocumentReference docUserRef = usersRef.document(result.getContents().replace("/","\\/"));
                     docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {

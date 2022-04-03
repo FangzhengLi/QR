@@ -138,7 +138,7 @@ public class UserCode extends AppCompatActivity {
                                         FirebaseFirestoreException error) {
                                     boolean exit = false;
                                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                        String ID = doc.getId();
+                                        String ID = doc.getString("qrid");
                                         if (ID.equals(userstr)) {
                                             exit = true;
                                         }

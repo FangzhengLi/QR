@@ -54,7 +54,16 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSignin:
-                signin();
+                final EditText edtTmp;
+
+                edtTmp = (EditText) findViewById(R.id.txtAccount);
+                String account = edtTmp.getText().toString();
+                if (account.equals("")) {
+                    showMessage("Account can't be empty!");
+                    edtTmp.requestFocus();
+                    return;
+                }
+                signin(account);
                 break;
             case R.id.txtSignup:
                 Intent intent = new Intent(this, SignupActivity.class);
@@ -85,11 +94,12 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if (result != null) {
             if (result.getContents() != null) {
-                SharedData appData = (SharedData) getApplication();
-                appData.setUsername(result.getContents());
-                appData.setPlayerName(result.getContents());
-                Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-                startActivity(intent);
+//                SharedData appData = (SharedData) getApplication();
+//                appData.setUsername(result.getContents());
+//                appData.setPlayerName(result.getContents());
+//                Intent intent = new Intent(SigninActivity.this, MainActivity.class);
+//                startActivity(intent);
+                signin(result.getContents());
 
             } else {
                 Toast.makeText(this, "No Result", Toast.LENGTH_LONG).show();
@@ -99,17 +109,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void signin() {
-        final EditText edtTmp;
-
-        edtTmp = (EditText) findViewById(R.id.txtAccount);
-        String account = edtTmp.getText().toString();
-        if (account.equals("")) {
-            showMessage("Account can't be empty!");
-            edtTmp.requestFocus();
-            return;
-        }
-
+    private void signin(String account) {
         SharedData appData = (SharedData) getApplication();
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
@@ -122,7 +122,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 if (task.isSuccessful()) {
                     if (task.getResult().isEmpty()) {
                         showMessage("Account or password error");
-                        edtTmp.requestFocus();
+//                        edtTmp.requestFocus();
                         return;
                     } else {
 //                    for (QueryDocumentSnapshot document : task.getResult()) {

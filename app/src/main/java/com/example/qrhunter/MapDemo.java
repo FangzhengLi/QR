@@ -101,7 +101,7 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
                 }
                 double lng = listGeoCoder.get(0).getLongitude();
                 double lat = listGeoCoder.get(0).getLatitude();
-                Log.i("GoogleMap", "Longitude: " + String.valueOf(lng) + "Latitude: " + String.valueOf(lat));
+                Log.i("GoogleMap", "Longitude: " + String.valueOf(lng) + " Latitude: " + String.valueOf(lat));
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                 //mMap.animateCamera(CameraUpdateFactory.zoomIn());

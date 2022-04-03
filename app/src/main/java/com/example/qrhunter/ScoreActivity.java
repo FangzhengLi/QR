@@ -183,7 +183,7 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
 
         ///删除了下面代码
         //hashScore.hash256(qrCode)
-        DocumentReference docCodeRef = codesRef.document(qrCode);
+        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
         docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

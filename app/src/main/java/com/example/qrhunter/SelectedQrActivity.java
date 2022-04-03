@@ -84,11 +84,11 @@ public class SelectedQrActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if (appData.getComefromme()) {
+//                if (appData.getComefromme()) {
                     intent = new Intent(SelectedQrActivity.this, UserCode.class);
-                } else {
-                    intent = new Intent(SelectedQrActivity.this, SearchUserCode.class);
-                }
+//                } else {
+//                    intent = new Intent(SelectedQrActivity.this, SearchUserCode.class);
+//                }
                 startActivity(intent);
             }
         });
@@ -117,8 +117,9 @@ public class SelectedQrActivity extends AppCompatActivity {
         codeLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashScore hashScore = new HashScore();
                 CollectionReference userRef = db.collection("QRCodes");
-                DocumentReference docUserRef = userRef.document(qrid);
+                DocumentReference docUserRef = userRef.document(hashScore.hash256(qrid));
                 docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
