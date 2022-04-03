@@ -129,35 +129,36 @@ public class UserCode extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                         if(!check){
-                        String userstr = codeScoreList.get(i).getCode();
+                            String userstr = codeScoreList.get(i).getCode();
 
-                        CollectionReference codes = db.collection("QRCodes");
-                        codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
-                                    FirebaseFirestoreException error) {
-                                boolean exit = false;
-                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                    String ID = doc.getId();
-                                    if (ID.equals(userstr)) {
-                                        exit = true;
+                            CollectionReference codes = db.collection("QRCodes");
+                            codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
+                                        FirebaseFirestoreException error) {
+                                    boolean exit = false;
+                                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                        String ID = doc.getId();
+                                        if (ID.equals(userstr)) {
+                                            exit = true;
+                                        }
                                     }
-                                }
-                                if (exit == false) {
-                                    showDelete(i);
-                                } else {
-                                    Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
-                                    intent.putExtra("qrid", userstr);
-                                    intent.putExtra("index", i);
-                                    Long score = (Long) tmp_codeScoreList.get(i).get("score");
-                                    intent.putExtra("score", score);
-                                    startActivity(intent);
-                                }
+                                    if (exit == false) {
+                                        showDelete(i);
+                                    } else {
+                                        appData.setComefromme(true);
+                                        Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
+                                        intent.putExtra("qrid", userstr);
+                                        intent.putExtra("index", i);
+                                        Long score = (Long) tmp_codeScoreList.get(i).get("score");
+                                        intent.putExtra("score", score);
+                                        startActivity(intent);
+                                    }
 
-                            }
-                        });
+                                }
+                            });
 
-                    }else{
+                        }else{
                             showMessage();
                         }
                     }

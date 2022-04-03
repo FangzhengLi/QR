@@ -57,8 +57,8 @@ public class SearchUserCode extends AppCompatActivity {
         String userName=intent.getStringExtra("userName");
         txtUsername.setText(userName);
 
-        appData=(SharedData) getApplication();
-        userName=appData.getUsername();
+        //appData=(SharedData) getApplication();
+        //userName=appData.getUsername();
         db = FirebaseFirestore.getInstance();
         txtTotalScore = findViewById(R.id.txtTotalScore);
         txtNumber = findViewById(R.id.txtNumber);
@@ -127,9 +127,11 @@ public class SearchUserCode extends AppCompatActivity {
                                 } else {
                                     SharedData appData = (SharedData) getApplication();
                                     appData.setComefromme(false);
-                                    Intent intent = new Intent(SearchUserCode.this, SelectedQrActivity.class);
+                                    Intent intent = new Intent(SearchUserCode.this, SelectedSearchUserQr.class);
                                     intent.putExtra("qrid", userstr);
                                     intent.putExtra("index", i);
+                                    intent.putExtra("searchedUserName", userName);
+                                    Log.d(TAG, "---------------------------------==" + userName);
                                     Long score = (Long) tmp_codeScoreList.get(i).get("score");
                                     intent.putExtra("score", score);
                                     startActivity(intent);
