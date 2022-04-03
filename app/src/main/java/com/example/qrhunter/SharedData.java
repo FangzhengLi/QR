@@ -11,6 +11,7 @@ public class SharedData extends Application {
     private int codescore;
     private String codedisplay;
     private String playerName;
+    private Boolean comefromme;
 
     public String getPlayerName() {
         return playerName;
@@ -74,5 +75,13 @@ public class SharedData extends Application {
 
     public String getQrcodekey() {
         return qrcodekey;
+    }
+
+    public void setComefromme(Boolean comefromme) {
+        this.comefromme = comefromme;
+    }
+
+    public Boolean getComefromme() {
+        return comefromme;
     }
 }

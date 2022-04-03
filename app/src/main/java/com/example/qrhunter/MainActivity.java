@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String userPassword = preferences.getString("userPassword", "");
         if (!userName.equals("")) {
             appData.setUsername(userName);
+            appData.setPlayerName(userName);
         }
 
         String user = appData.getUsername();
@@ -261,11 +262,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 /**if(search == false){
-                    Intent intent = new Intent(this, UserProfile.class);
-                    startActivity(intent);
-                }else{
-                    Intent intent = new Intent(this, ScoreActivity.class);
-                    startActivity(intent);}**/
+                 Intent intent = new Intent(this, UserProfile.class);
+                 startActivity(intent);
+                 }else{
+                 Intent intent = new Intent(this, ScoreActivity.class);
+                 startActivity(intent);}**/
 
 //
             } else {

@@ -163,7 +163,7 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
                     ArrayList<CodeScore> codeScoreList = (ArrayList<CodeScore>) document.get("codes");
                     codeScoreList.add(new CodeScore(qrCode, score));
                     data.put("codes", codeScoreList);
-                   // qrCode = "123";
+                    // qrCode = "123";
                     //Long var = (Long) score;
                     if(qrCode.equals(userName)){
                         data.put("unique",score);
