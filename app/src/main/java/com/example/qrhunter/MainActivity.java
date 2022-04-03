@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //String userId  = "1234";
     FirebaseFirestore db;
     SharedData appData;
-    Boolean scancode = false;
+    boolean addCode ;
+    boolean exist = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +102,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        Button searchCode = findViewById(R.id.searchbtn);
+        final Button searchCode = findViewById(R.id.searchbtn);
         searchCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scancode=false;
+                addCode= false;
                 scanCode();
             }
         });
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.btnPlay:
                 appData.setUsername(appData.getPlayerName());
-                scancode =true;
+                addCode=true;
                 scanCode();
                 break;
             //case R.id.btnMap:
@@ -245,19 +247,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (result != null) {
             if (result.getContents() != null) {
                 SharedData appData = (SharedData) getApplication();
-                if (!(scancode)) {
-                    appData.setUsername(result.getContents());
-                    Intent intent = new Intent(this, UserProfile.class);
-                    intent.putExtra("check",true);
-                    startActivity(intent);
-                } else if (scancode) {
+                if (!(addCode)) {
+                    CollectionReference usersRef = db.collection("Users");
+                    DocumentReference docUserRef = usersRef.document(result.getContents());
+                    docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if (!task.getResult().exists()) {
+                                    showMessage("User not found.");
+                                }else{
+                                    appData.setUsername(result.getContents());
+                                    Intent intent = new Intent(MainActivity.this, UserCode.class);
+                                    intent.putExtra("check", true);
+                                    startActivity(intent);
+                                }
+                            }
+                        }});
+
+                    //boolean now = existUser(result.getContents());
+                    //Log.e(TAG, "onActivityResult: "+now );
+                      //if(now==true) {
+                          //appData.setUsername(result.getContents());
+                          //Intent intent = new Intent(this, UserCode.class);
+                          //intent.putExtra("check", true);
+                          //startActivity(intent);
+                      //}
+               } else if (addCode) {
                     appData.setQrcode(result.getContents());
                     appData.setImagepath(result.getBarcodeImagePath());
                     HashScore hashScore = new HashScore();
                     appData.setQrcodekey(hashScore.hash256(result.getContents()));
                     Intent intent1 = new Intent(this, ScoreActivity.class);
                     startActivity(intent1);
-                }
+              }
 
 
 
@@ -324,8 +347,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.show();
     }
 
+    public boolean existUser(String result){
+        CollectionReference usersRef = db.collection("Users");
+        DocumentReference docUserRef = usersRef.document(result);
+        docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (!task.getResult().exists()) {
+                        showMessage("User not found.");
+                        exist=false;
+                    }
 
+                    }
+                }});
+        return exist;
 
-
+    }
 
 }

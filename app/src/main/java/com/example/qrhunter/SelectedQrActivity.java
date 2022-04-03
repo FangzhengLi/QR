@@ -28,13 +28,15 @@ public class SelectedQrActivity extends AppCompatActivity {
     String codeDisplay;
     FirebaseFirestore db;
     boolean check =false;
+    String qrid;
+    boolean locationOr = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_qr);
         Intent intent=getIntent();
-        String qrid=intent.getStringExtra("qrid");
+        qrid=intent.getStringExtra("qrid");
 
         check =intent.getBooleanExtra("check",false);
 
@@ -108,16 +110,35 @@ public class SelectedQrActivity extends AppCompatActivity {
         TextView scoretxt = findViewById(R.id.txtCodeScore);
         scoretxt.setText("Score: " + score.toString());
 
+
+
         //display geolocation
         Button codeLocation = findViewById(R.id.txtCodeLocation);
         codeLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapdemo2 = new Intent(SelectedQrActivity.this, MapDemo2.class);
-                mapdemo2.putExtra("strqrid",qrid);
-                startActivity(mapdemo2);
+                CollectionReference userRef = db.collection("QRCodes");
+                DocumentReference docUserRef = userRef.document(qrid);
+                docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot document = task.getResult();
+                        locationOr = document.getBoolean("sharedLocation");
+                        //Log.e(TAG, "" + locationOr);
+                        if (locationOr == false) {
+                            ShowMessage();
+                        } else {
+                            Intent mapdemo2 = new Intent(SelectedQrActivity.this, MapDemo2.class);
+                            mapdemo2.putExtra("strqrid", qrid);
+                            startActivity(mapdemo2);
+                        }
+
+
+                    }
+                });
 
             }
+
         });
 
     }
@@ -182,5 +203,19 @@ public class SelectedQrActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void ShowMessage(){
+        android.app.AlertDialog dlg =new android.app.AlertDialog.Builder(SelectedQrActivity.this)
+                .setTitle("The code has no Location")
+                .setMessage("The code do not have Location, can not check the mao")
+                .setPositiveButton("Now I know that", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dlg.show();
     }
 }

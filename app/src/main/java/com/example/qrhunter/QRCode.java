@@ -5,17 +5,35 @@ import java.util.ArrayList;
 public class QRCode {
     private int score;
     private String  QRId;
-    private Boolean shared;
+    private Boolean sharedLocation;
+    private Boolean sharedPicture;
     private String comment;
     private String location;
     ArrayList<String> scanners;
 
     public QRCode() {}
 
+    public void setSharedLocation(Boolean sharedLocation) {
+        this.sharedLocation = sharedLocation;
+    }
+
+    public void setSharedPicture(Boolean sharedPicture) {
+        this.sharedPicture = sharedPicture;
+    }
+
+    public Boolean getSharedLocation() {
+        return sharedLocation;
+    }
+
+    public Boolean getSharedPicture() {
+        return sharedPicture;
+    }
+
     public QRCode(String QRId, int score) {
         this.score = score;
         this.QRId = QRId;
-        this.shared = false;
+        this.sharedLocation = false;
+        this.sharedPicture = false;
         this.comment = "";
         this.location = "";
         this.scanners = new ArrayList<String>();
@@ -37,13 +55,7 @@ public class QRCode {
         return QRId;
     }
 
-    public void setShared(Boolean shared) {
-        this.shared = shared;
-    }
 
-    public Boolean getShared() {
-        return shared;
-    }
 
     public void setComment(String comment) {
         this.comment = comment;

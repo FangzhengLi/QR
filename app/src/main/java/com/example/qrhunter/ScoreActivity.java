@@ -137,7 +137,8 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void whoscanned() {
-        Intent intent = new Intent(this, CodeScannedbyActivity  .class);
+        Intent intent = new Intent(this,WhoAlsoScan.class);
+        intent.putExtra("qrid",qrCode);
         startActivity(intent);
     }
 
@@ -179,7 +180,10 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
         // If Code exists, read it out, create it if it does not exist, and write it back by modifying the parameters
         HashScore hashScore = new HashScore();
         CollectionReference codesRef = db.collection("QRCodes");
-        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
+
+        ///删除了下面代码
+        //hashScore.hash256(qrCode)
+        DocumentReference docCodeRef = codesRef.document(qrCode);
         docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -208,6 +212,8 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
 
 
     }
+
+
 
 
 

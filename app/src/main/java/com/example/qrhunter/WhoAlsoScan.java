@@ -33,7 +33,7 @@ public class WhoAlsoScan extends AppCompatActivity {
         setContentView(R.layout.activity_who_also_scan);
         Intent intent=getIntent();
         String qrid=intent.getStringExtra("qrid");
-        Log.d(TAG, "从UserCode传递过来的参数"+qrid);
+        //Log.d(TAG, "从UserCode传递过来的参数"+qrid);
         db = FirebaseFirestore.getInstance();
         CollectionReference qrRef = db.collection("QRCodes");
         DocumentReference docQrRef = qrRef.document(qrid);
@@ -43,7 +43,7 @@ public class WhoAlsoScan extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<HashMap> alsoScanList = (ArrayList<HashMap>) document.get("scanners");
-                Log.d(TAG, "loooooooooool"+alsoScanList);
+               // Log.d(TAG, "loooooooooool"+alsoScanList);
 
                 qrAdapter = new ArrayAdapter<HashMap>(WhoAlsoScan.this, android.R.layout.simple_list_item_1,alsoScanList);
                 AlsoScanList.setAdapter(qrAdapter);
@@ -55,7 +55,8 @@ public class WhoAlsoScan extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent( WhoAlsoScan.this, ScoreActivity.class);
+                startActivity(intent);
             }
         });
     }

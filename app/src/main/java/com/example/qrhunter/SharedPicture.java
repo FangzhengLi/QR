@@ -1,40 +1,71 @@
 package com.example.qrhunter;
 
+import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SharedPicture extends AppCompatActivity {
     String imagePath;
     FirebaseFirestore db;
+    String qrCode;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shared_picture);
+        SharedData appData = (SharedData) getApplication();
+        qrCode = appData.getQrcode();
 
         Button notBtn =findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                db = FirebaseFirestore.getInstance();
+                CollectionReference codesRef = db.collection("QRCodes");
+                DocumentReference docCodeRef = codesRef.document(qrCode);
+                docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("sharedPicture", false);
+                            docCodeRef.set(data, SetOptions.merge());
+                        }
+                    }
+                });
                 Intent intent = new Intent(SharedPicture.this, SharedGeo.class);
                 startActivity(intent);
 
@@ -94,6 +125,9 @@ public class SharedPicture extends AppCompatActivity {
 
 
     }
+
+
+
 
     public void notBigPhoto(){
         SharedData appData = (SharedData) getApplication();
@@ -206,15 +240,32 @@ public class SharedPicture extends AppCompatActivity {
 
 
     public void takePhoto(){
+        startCamera();
         //take photo save at sharedData which use to check the picture size, put on the view
 
 
         //after taking, put on the view
-        ImageView imageView = findViewById(R.id.imgQrcode);
-        SharedData appData = (SharedData) getApplication();
-        imagePath = appData.getImagepath();
-        File file = new File(imagePath);
-        imageView.setImageURI(Uri.fromFile(file));
+        //ImageView imageView = findViewById(R.id.imgQrcode);
+        //SharedData appData = (SharedData) getApplication();
+        //imagePath = appData.getImagepath();
+       // File file = new File(imagePath);
+        //imageView.setImageURI(Uri.fromFile(file));
+    }
+    private void startCamera() {
+        //可以打开摄像头并照相
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CODE);
+        // Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //File file = FileUtils.createOriImageFile();
+        // if (file != null) {
+        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        //imgUriOri = Uri.fromFile(file);
+        //} else {
+        //imgUriOri = FileProvider.getUriForFile(context, "com.qh.insurance.file_provider", file);
+        // }
+        //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imgUriOri);
+        // context.startActivityForResult(cameraIntent, Constants.PHOTO_REQUEST_CAMERA);
+        //  }
     }
 
     //save the picture on the firebase
