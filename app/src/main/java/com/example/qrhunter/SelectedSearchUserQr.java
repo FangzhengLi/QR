@@ -23,7 +23,7 @@ public class SelectedSearchUserQr extends AppCompatActivity {
         setContentView(R.layout.activity_selected_search_user_qr);
         Intent intent=getIntent();
         String qrid=intent.getStringExtra("qrid");
-//        String user = intent.getStringExtra("UserName");
+        String searchedUserName = intent.getStringExtra("searchedUserName");
         db = FirebaseFirestore.getInstance();
         SharedData appData = (SharedData) getApplication();
         String user = appData.getUsername();
@@ -48,7 +48,7 @@ public class SelectedSearchUserQr extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SelectedSearchUserQr.this,SearchUserCode.class);
-                intent.putExtra("userName",user);
+                intent.putExtra("userName",searchedUserName);
                 startActivity(intent);
             }
         });
@@ -60,6 +60,9 @@ public class SelectedSearchUserQr extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SelectedSearchUserQr.this,CodeCommentActivity.class);
                 intent.putExtra("userName",user);
+                intent.putExtra("qrid", qrid);
+                intent.putExtra("searchedUserName", searchedUserName);
+
                 startActivity(intent);
             }
         });

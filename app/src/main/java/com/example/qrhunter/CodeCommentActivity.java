@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,11 +21,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 //in progress
 public class CodeCommentActivity extends AppCompatActivity implements View.OnClickListener {
     String codeDisplay;
+    String userName;
+    String qrId;
     FirebaseFirestore db;
+    SharedData appData;
+    String searchedUserName;
 
     final String TAG = "CodeCommentActivity";
 
@@ -31,9 +40,15 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_codecomment);
 
+        Intent intent=getIntent();
+        qrId = intent.getStringExtra("qrid");
+        searchedUserName = intent.getStringExtra("searchedUserName");
+
+
         db = FirebaseFirestore.getInstance();
-        SharedData appData = (SharedData) getApplication();
+        appData = (SharedData) getApplication();
         codeDisplay = appData.getCodedisplay();
+        userName = appData.getUsername();
 
         Button button;
         button = findViewById(R.id.btnAddCodeComment);
@@ -51,7 +66,8 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
                 doAddComment();
                 break;
             case R.id.btnBackToCodeImage:
-                goBack();
+
+                goBack(searchedUserName);
                 break;
             default:
                 break;
@@ -59,8 +75,9 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void displayInformation() {
+        HashScore hashScore = new HashScore();
         CollectionReference codesRef = db.collection("QRCodes");
-        DocumentReference docCodeRef = codesRef.document(codeDisplay);
+        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrId));
         docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -68,10 +85,10 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
                     DocumentSnapshot document = task.getResult();
                     String comment = document.getString("Comment");
                     if (comment != null) {
-                        EditText editText = findViewById(R.id.txtCodeComment);
-                        editText.setText(comment);
+                        TextView textView = findViewById(R.id.txtAllComments);
+                        textView.setText(comment);
                     }
-                    Log.d(TAG, "User documents write success. ");
+                    Log.d(TAG, "User documents read success. ");
                 } else {
                     Log.d(TAG, "Error getting user documents: ", task.getException());
                 }
@@ -80,20 +97,30 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void doAddComment() {
+        EditText editText = findViewById(R.id.txtCodeComment);
+        String comment = editText.getText().toString();
+        if (comment == null)
+            return;
+        Date date = new Date();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
+        TextView textView = findViewById(R.id.txtAllComments);
+        String allComments = textView.getText().toString();
+        if (allComments == null)
+            allComments = comment + "\n        Written by " + userName + "    " + dateFormat.format(date);
+        else
+            allComments = allComments + "\n\n" + comment + "\n        Written by " + userName + "    " + dateFormat.format(date);
+        textView.setText(allComments);
+
+        HashScore hashScore = new HashScore();
         CollectionReference codesRef = db.collection("QRCodes");
-        DocumentReference docCodeRef = codesRef.document(codeDisplay);
+        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrId));
         docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    EditText editText = findViewById(R.id.txtCodeComment);
-                    String comment = editText.getText().toString();
-                    if (comment != null) {
-                        HashMap<String, String> data = new HashMap<>();
-                        data.put("Comment", comment);
-                        docCodeRef.set(data, SetOptions.merge());
-                    }
-
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("Comment", textView.getText().toString());
+                    docCodeRef.set(data, SetOptions.merge());
                     Log.d(TAG, "User documents write success. ");
                 } else {
                     Log.d(TAG, "Error getting user documents: ", task.getException());
@@ -102,8 +129,22 @@ public class CodeCommentActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-    private void goBack() {
-        Intent intent = new Intent(this, QRCodeActivity.class);
-        startActivity(intent);
+    private void goBack(String searchedUserName) {
+//        if (appData.getComefromme()) {
+//            intent = new Intent(this, SelectedQrActivity.class);
+//        } else {
+//            intent = new Intent(this, SelectedSearchUserQr.class);
+//        }
+
+
+//        Intent intent = new Intent(this, SelectedSearchUserQr.class);
+//
+//
+//        intent.putExtra("qrid", qrId);
+//        intent.putExtra("searchedUserName", searchedUserName);
+//        Log.d(TAG, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" + searchedUserName);
+//
+//        startActivity(intent);
+        finish();
     }
 }
