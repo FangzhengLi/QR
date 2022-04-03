@@ -55,8 +55,7 @@ public class WhoAlsoScan extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent( WhoAlsoScan.this, ScoreActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }

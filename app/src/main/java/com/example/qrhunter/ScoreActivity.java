@@ -137,8 +137,9 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void whoscanned() {
+        HashScore hashScore = new HashScore();
         Intent intent = new Intent(this,WhoAlsoScan.class);
-        intent.putExtra("qrid",qrCode);
+        intent.putExtra("qrid",hashScore.hash256(qrCode));
         startActivity(intent);
     }
 

@@ -14,7 +14,7 @@ public class User  {
     private int unique;
     private int total;
     String comment;
-    String email;
+    //String email;
     List<CodeScore> code;
     private ArrayList<QRCode> codes = new ArrayList<>();
     private String userEmail;
@@ -27,7 +27,7 @@ public class User  {
         this.userPasscode = password;
         this.sum = 0;
         this.total = 0;
-        this.email = "";
+        this.userEmail = "";
         this.comment = "";
         this.code = new ArrayList<CodeScore>();
         // this.codes = new ArrayList<>();

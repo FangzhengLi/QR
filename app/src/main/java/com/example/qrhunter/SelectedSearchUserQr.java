@@ -36,8 +36,9 @@ public class SelectedSearchUserQr extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashScore hashScore = new HashScore();
                 Intent intent = new Intent(SelectedSearchUserQr.this,WhoAlsoScan.class);
-                intent.putExtra("qrid",qrid);
+                intent.putExtra("qrid",hashScore.hash256(qrid));
                 startActivity(intent);
             }
         });
@@ -58,9 +59,10 @@ public class SelectedSearchUserQr extends AppCompatActivity {
         codecommentbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashScore hashScore = new HashScore();
                 Intent intent = new Intent(SelectedSearchUserQr.this,CodeCommentActivity.class);
                 intent.putExtra("userName",user);
-                intent.putExtra("qrid", qrid);
+                intent.putExtra("qrid", hashScore.hash256(qrid));
                 intent.putExtra("searchedUserName", searchedUserName);
 
                 startActivity(intent);
@@ -75,8 +77,9 @@ public class SelectedSearchUserQr extends AppCompatActivity {
         codeLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashScore hashScore = new HashScore();
                 Intent mapdemo2 = new Intent(SelectedSearchUserQr.this, MapDemo2.class);
-                mapdemo2.putExtra("strqrid",qrid);
+                mapdemo2.putExtra("strqrid",hashScore.hash256(qrid));
                 startActivity(mapdemo2);
             }
         });

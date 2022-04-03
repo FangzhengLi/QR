@@ -52,8 +52,9 @@ public class SelectedQrActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashScore hashScore = new HashScore();
                 Intent intent = new Intent(SelectedQrActivity.this,WhoAlsoScan.class);
-                intent.putExtra("qrid",qrid);
+                intent.putExtra("qrid",hashScore.hash256(qrid));
                 startActivity(intent);
             }
         });
