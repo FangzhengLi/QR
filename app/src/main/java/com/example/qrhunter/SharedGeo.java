@@ -2,14 +2,23 @@ package com.example.qrhunter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,12 +33,17 @@ import java.util.Map;
 public class SharedGeo extends AppCompatActivity {
     FirebaseFirestore db;
     String qrCode;
+    int LOCATION_REQUEST_CODE = 10002;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    double currentlatitude1;
+    double currentlongitude1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shared_geo);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         Button back = findViewById(R.id.btnBackToScan);
         back.setOnClickListener(new View.OnClickListener() {
@@ -38,12 +52,12 @@ public class SharedGeo extends AppCompatActivity {
                 Intent intent = new Intent(SharedGeo.this, MainActivity.class);
                 startActivity(intent);
 //                finish();
-           }
+            }
         });
 
         SharedData appData = (SharedData) getApplication();
         qrCode = appData.getQrcode();
-        Button notBtn =findViewById(R.id.btntxt);
+        Button notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +73,7 @@ public class SharedGeo extends AppCompatActivity {
                             Map<String, Object> data = new HashMap<>();
                             data.put("sharedLocation", false);
                             docCodeRef.set(data, SetOptions.merge());
-                            }
+                        }
                     }
                 });
                 Intent intent = new Intent(SharedGeo.this, UserCode.class);
@@ -73,11 +87,68 @@ public class SharedGeo extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveGeo();
+                //saveGeo();
+                if (ContextCompat.checkSelfPermission(SharedGeo.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    getLastLocation();
+                } else {
+                    askLocationPermission();
+
+                }
             }
         });
 
 
+    }
+/*
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation();
+        } else {
+
+        }
+    }*/
+
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Task<Location> locationTask = fusedLocationProviderClient.getLastLocation();
+        locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if( location !=null){
+                    currentlatitude1=location.getLatitude();
+                    currentlongitude1=location.getLongitude();
+                }else{
+                    Log.d("显示失败","Success:Location was null");
+                }
+            }
+        });
+        locationTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("显示失败","失败了"+e.getLocalizedMessage());
+            }
+        });
+
+    }
+    private void askLocationPermission(){
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
+            }else{
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
+            }
+        }
     }
 
 
@@ -102,4 +173,17 @@ public class SharedGeo extends AppCompatActivity {
 //    }
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==LOCATION_REQUEST_CODE){
+            if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                getLastLocation();
+
+            }else{
+
+            }
+        }
+    }
 }
