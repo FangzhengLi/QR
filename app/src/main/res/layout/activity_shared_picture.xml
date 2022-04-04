@@ -40,13 +40,14 @@
         android:layout_marginTop="40dp"
         android:text="Take Photo" />
 
-    <Button
+    <TextView
         android:id="@+id/btnphoto"
         android:layout_width="wrap_content"
         android:layout_height="31dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:textSize="10dp"
+        android:clickable="true"
         android:text="use code picture"
         android:textColor="#0000FF" />
 
@@ -67,13 +68,14 @@
         android:layout_marginTop="40dp"
         android:text="Share" />
 
-    <Button
+    <TextView
         android:id="@+id/btntxt"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_gravity="center"
         android:text="I don't want to share the photo"
         android:textColor="#0000FF"
+        android:clickable="true"
         android:textSize="10dp" />
 
 

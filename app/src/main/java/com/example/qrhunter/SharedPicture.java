@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -84,7 +85,7 @@ public class SharedPicture extends AppCompatActivity {
         hashScore = new HashScore();
 
         //don't share
-        Button notBtn = findViewById(R.id.btntxt);
+        TextView notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,14 +125,14 @@ public class SharedPicture extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  Intent intent = new Intent(SharedPicture.this, ScoreActivity.class);
-              //  startActivity(intent);
-            finish();
+                //  Intent intent = new Intent(SharedPicture.this, ScoreActivity.class);
+                //  startActivity(intent);
+                finish();
             }
         });
 
         //use the code photo
-        Button image = findViewById(R.id.btnphoto);
+        TextView image = findViewById(R.id.btnphoto);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
