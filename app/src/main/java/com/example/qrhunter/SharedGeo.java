@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This java file is to ask the users if they want to share the geolocation
+ */
 public class SharedGeo extends AppCompatActivity {
     FirebaseFirestore db;
     String qrCode;
@@ -46,7 +49,7 @@ public class SharedGeo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shared_geo);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
+        //back button
         Button back = findViewById(R.id.btnBackToScan);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +61,7 @@ public class SharedGeo extends AppCompatActivity {
 
         SharedData appData = (SharedData) getApplication();
         qrCode = appData.getQrcode();
+        // The button not sharing the geolocation
         Button notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,12 +87,11 @@ public class SharedGeo extends AppCompatActivity {
             }
         });
 
-        //update code geo
+        //update geo point of the code
         Button share = findViewById(R.id.btnTake);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //saveGeo();
                 if (ContextCompat.checkSelfPermission(SharedGeo.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     getLastLocation();
                     Intent intent = new Intent(SharedGeo.this, UserCode.class);
@@ -102,7 +105,7 @@ public class SharedGeo extends AppCompatActivity {
 
 
     }
-
+    // get the current location
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -129,19 +132,19 @@ public class SharedGeo extends AppCompatActivity {
                     Log.d("", "sssssssiiiiiihhhhheeeee"+currentlongitude1+",,,,"+currentlatitude1);
                     com.google.android.gms.maps.model.LatLng latLng = new LatLng(currentlatitude1, currentlongitude1);
                     docCodeRef.update("sharedLocation",true);
-                    //!!!!!!!!!!!!!!!!!这里不会!!!!!!!!!!!!!!!!!!!
+                    //update the geo point
                     geo = new GeoPoint(currentlatitude1,currentlongitude1);
                     docCodeRef.update("geoPoint", geo);
 
                 }else{
-                    Log.d("显示失败","Success:Location was null");
+                    Log.d("fail","Success:Location was null");
                 }
             }
         });
         locationTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("显示失败","失败了"+e.getLocalizedMessage());
+                Log.e("fail","fail"+e.getLocalizedMessage());
             }
         });
 

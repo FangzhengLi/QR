@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * This function is to show the code list with the highest and the lowest scoring code of the searched user
+ */
 public class SearchUserCode extends AppCompatActivity {
 
     FirebaseFirestore db;
@@ -57,8 +60,7 @@ public class SearchUserCode extends AppCompatActivity {
         String userName=intent.getStringExtra("userName");
         txtUsername.setText(userName);
 
-        //appData=(SharedData) getApplication();
-        //userName=appData.getUsername();
+        //connect with database
         db = FirebaseFirestore.getInstance();
         txtTotalScore = findViewById(R.id.txtTotalScore);
         txtNumber = findViewById(R.id.txtNumber);
@@ -69,6 +71,7 @@ public class SearchUserCode extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
+                //get data from database
                 Long totalScore = document.getLong("sum");
                 Long totalNumber = document.getLong("total");
                 ArrayList<HashMap> tmp_codeScoreList = (ArrayList<HashMap>) document.get("codes");
@@ -82,6 +85,7 @@ public class SearchUserCode extends AppCompatActivity {
                 txtTotalScore.setText(totalScore.toString());
                 txtNumber.setText(totalNumber.toString());
                 codeList.setAdapter(codeAdapter);
+                //sort the codeList
                 Collections.sort(codeScoreList);
                 codeAdapter.notifyDataSetChanged();
                 if (codeScoreList.size()>=1) {
@@ -151,12 +155,14 @@ public class SearchUserCode extends AppCompatActivity {
         buttonhighest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Show the highest scoring code
                 highestDialog(highestscore);
             }
         });
         buttonlowest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Show the lowest scoring code
                 lowestDialog(lowestscore);
             }
         });
@@ -170,6 +176,7 @@ public class SearchUserCode extends AppCompatActivity {
         });
 
     }
+
 
     public void highestDialog(String message){
         AlertDialog dlg =new AlertDialog.Builder(SearchUserCode.this)

@@ -19,7 +19,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-//see others' profile
+/**
+ * This java file is to show the profile of the searched user
+ */
 public class UserProfile extends AppCompatActivity {
 
     SharedData appData;
@@ -35,8 +37,7 @@ public class UserProfile extends AppCompatActivity {
         String searchName = appData.getSearchname();
         TextView textView = (TextView) findViewById(R.id.txtUsername);
         textView.setText(searchName);
-        Log.d(TAG, "!!!!!searchName!!!!!!!!!!"+searchName);
-
+        //back button
         Button btn = findViewById(R.id.btnUserBack);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +46,7 @@ public class UserProfile extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        // to show the code collection of the searched user
         Button code = findViewById(R.id.btnUserCode);
         code.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,49 +71,5 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        /*not work yet
-        Button comment = findViewById(R.id.btnUserComment);
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(UserProfile.this, CodeCommentActivity.class);
-                startActivity(intent);
-            }
-        });
-
-         */
     }
 }
-
-
-
-
-        /*
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnUserCode:
-                break;
-            case R.id.btnUserComment:
-                usercomment();
-                break;
-            case R.id.btnUserBack:
-                back();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void usercomment() {
-        Intent intent = new Intent(this, CodeCommentActivity.class);
-        startActivity(intent);
-    }
-
-    private void back() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-}
-
-         */

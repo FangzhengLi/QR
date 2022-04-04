@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This java file is to show the detail of the code from the code list of the searched user
+ */
 public class SelectedSearchUserQr extends AppCompatActivity {
     String codeDisplay;
     FirebaseFirestore db;
@@ -42,7 +45,7 @@ public class SelectedSearchUserQr extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        //back button
         Button backbutton;
         backbutton = findViewById(R.id.btnBackToCodeList);
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +57,7 @@ public class SelectedSearchUserQr extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        // comment button
         Button codecommentbutton;
         codecommentbutton = findViewById(R.id.btnCodeComment);
         codecommentbutton.setOnClickListener(new View.OnClickListener() {
@@ -69,11 +72,11 @@ public class SelectedSearchUserQr extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        // show the score of the code
         Long score = intent.getLongExtra("score", 0);
         TextView scoretxt = findViewById(R.id.txtCodeScore);
         scoretxt.setText("Score: " + score);
-
+        //display the location of the code on the map
         Button codeLocation = findViewById(R.id.txtCodeLocation);
         codeLocation.setOnClickListener(new View.OnClickListener() {
             @Override
