@@ -93,27 +93,28 @@ public class SearchUserCode extends AppCompatActivity {
                     highestscore = "There no codes";
                 }
 
-                codeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+              codeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                         String userstr=codeScoreList.get(i).getCode();
-
-                        CollectionReference codes  = db.collection("QRCodes");
-                        codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
-                                    FirebaseFirestoreException error) {
-                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                    String ID = doc.getId();
-                                    Intent intent=new Intent(SearchUserCode.this,SelectedSearchUserQr.class);
-                                    intent.putExtra("qrid",userstr);
-                                    intent.putExtra("index", i);
-                                    intent.putExtra("searchedUserName",userName);
-                                    long score = codeScoreList.get(i).getScore();
-                                    intent.putExtra("score", score);
+                        Intent intent=new Intent(SearchUserCode.this,CodeCommentActivity.class);
+                        intent.putExtra("qrid",userstr);
+                        //CollectionReference codes  = db.collection("QRCodes");
+                        //codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                          //  @Override
+                            //public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
+                              //      FirebaseFirestoreException error) {
+                                //for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                  //  String ID = doc.getId();
+                                    //Intent intent=new Intent(SearchUserCode.this,SelectedSearchUserQr.class);
+                                    //intent.putExtra("qrid",userstr);
+                                    //intent.putExtra("index", i);
+                                    //intent.putExtra("searchedUserName",userName);
+                                   // long score = codeScoreList.get(i).getScore();
+                                   // intent.putExtra("score", score);
                                     startActivity(intent);}
-                            }
+                           // }
                                 /*
                                 boolean exit = false;
                                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -137,11 +138,11 @@ public class SearchUserCode extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             }
-                        });
+                        });*/
 
-                                 */
-                    });
-                    }
+
+                   // });
+                    //}
                 });
             }
         });
@@ -197,4 +198,6 @@ public class SearchUserCode extends AppCompatActivity {
                 .create();
         dlg.show();
     }
+
+
 }
