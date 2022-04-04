@@ -87,4 +87,13 @@ public class QRCode {
     public void addScanner(String scanner) {
         this.scanners.add(scanner);
     }
+    public void setHttp(ArrayList<String> http) {
+        this.http = http;
+    }
+
+    public ArrayList<String> getHttp() {
+        return http;
+    }
+
 }
+

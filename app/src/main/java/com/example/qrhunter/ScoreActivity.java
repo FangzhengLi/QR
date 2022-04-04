@@ -58,12 +58,13 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_score);
 
         Button btnTmp;
+        TextView txtTmp;
         btnTmp = (Button) findViewById(R.id.btnBackToScan);
         btnTmp.setOnClickListener(this);
         btnTmp = (Button) findViewById(R.id.btnAddQRCode);
         btnTmp.setOnClickListener(this);
-        btnTmp = (Button) findViewById(R.id.btnwhoscanned);
-        btnTmp.setOnClickListener(this);
+        txtTmp = (TextView) findViewById(R.id.btnwhoscanned);
+        txtTmp.setOnClickListener(this);
 
         db = FirebaseFirestore.getInstance();
         SharedData appData = (SharedData) getApplication();

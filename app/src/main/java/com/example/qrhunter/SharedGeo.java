@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -62,7 +63,7 @@ public class SharedGeo extends AppCompatActivity {
         SharedData appData = (SharedData) getApplication();
         qrCode = appData.getQrcode();
         // The button not sharing the geolocation
-        Button notBtn = findViewById(R.id.btntxt);
+        TextView notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

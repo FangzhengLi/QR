@@ -36,7 +36,7 @@ android {
     buildToolsVersion '32.0.0'
 }
 
-dependencies {
+dependencies{
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
@@ -54,10 +54,12 @@ dependencies {
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.3.1'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'com.android.volley:volley:1.2.1'
-<<<<<<< HEAD
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
-
-=======
+    implementation platform('com.google.firebase:firebase-bom:29.3.0')
+    implementation 'com.google.firebase:firebase-auth'
+//<<<<<<< HEAD
+//    implementation 'com.google.firebase:firebase-storage:19.1.1'
+//
+//=======
     implementation 'com.google.firebase:firebase-storage:20.0.1'
->>>>>>> 9a3920e9eac96f05aa9194685a854bdda6297cbf
+//>>>>>>> 9a3920e9eac96f05aa9194685a854bdda6297cbf
 }

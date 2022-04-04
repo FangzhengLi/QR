@@ -2,14 +2,17 @@ package com.example.qrhunter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,16 +32,23 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashMap;
@@ -46,18 +56,19 @@ import java.util.Map;
 
 public class SharedPicture extends AppCompatActivity {
     FirebaseFirestore db;
+    HashScore hashScore;
     String qrCode;
-    Uri filePath;
+    String filePath;
+    String downloadUrl;
     int PICK_IMAGE_REQUEST = 111;
     private File picture;
     String imagePath;
 
+    Uri imageUri;
+    final String TAG = "SharedPicture";
+
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://w301t34.appspot.com");    //change the url according to your firebase app
-
-
-
-
 
 
     @Override
@@ -66,36 +77,24 @@ public class SharedPicture extends AppCompatActivity {
         setContentView(R.layout.activity_shared_picture);
         SharedData appData = (SharedData) getApplication();
         qrCode = appData.getQrcode();
+        imagePath = appData.getImagepath();
+        filePath = appData.getImagepath();
 
+        db = FirebaseFirestore.getInstance();
+        hashScore = new HashScore();
+
+        //don't share
         Button notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db = FirebaseFirestore.getInstance();
-                HashScore hashScore = new HashScore();
-                CollectionReference codesRef = db.collection("QRCodes");
-                DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
-                docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            //ArrayList<String> userList = (ArrayList<String>) document.get("scanners");
-                            //userList.add(userName);
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("sharedPicture", false);
-                            docCodeRef.set(data, SetOptions.merge());
-                        }
-                    }
-                });
+                donotShare();
                 Intent intent = new Intent(SharedPicture.this, SharedGeo.class);
                 startActivity(intent);
             }
-
-
-
         });
 
+        //pick a photo
         Button select = findViewById(R.id.btnSelect);
         select.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,67 +106,20 @@ public class SharedPicture extends AppCompatActivity {
             }
         });
 
+        //share
         Button share = findViewById(R.id.btnShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-               notBigPhoto();
-               if(filePath != null) {
-                   Log.e("onClick: ",filePath+"" );
-                   SharedData appData = new SharedData();
-                   String name =appData.getUsername();
-                   Date date = new Date(System.currentTimeMillis());
-                   SimpleDateFormat sdf = new SimpleDateFormat ("yyyyMMddHHmmss");
-                   String image_save_path =  sdf.format(date);
-                   StorageReference childRef = storageRef.child(name+image_save_path+".jpg");
-                   //uploading the image
-                    UploadTask uploadTask = childRef.putFile(filePath);
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(SharedPicture.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(SharedPicture.this, "Upload Failed -> " + e, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                else {
-                    Toast.makeText(SharedPicture.this, "Select an image", Toast.LENGTH_SHORT).show();
-                }
-
-
-                db = FirebaseFirestore.getInstance();
-                HashScore hashScore = new HashScore();
-                CollectionReference codesRef = db.collection("QRCodes");
-                DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
-                docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("sharedPicture", true);
-                            docCodeRef.set(data, SetOptions.merge());
-                        }
-                    }
-
-                });
-
+                //modify the share
+//               notBigPhoto();
+                share();
                 Intent intent1 = new Intent(SharedPicture.this, SharedGeo.class);
                 startActivity(intent1);
             }
-
-
-
-
-
-
-
         });
 
+        //back
         Button back = findViewById(R.id.btnBackToScan);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,38 +130,113 @@ public class SharedPicture extends AppCompatActivity {
             }
         });
 
-
-        //take a photo or use the code photo
+        //use the code photo
         Button image = findViewById(R.id.btnphoto);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageView imageView = findViewById(R.id.imgQrcode);
-                SharedData appData = (SharedData) getApplication();
-                imagePath = appData.getImagepath();
-                File file = new File(imagePath);
-                imageView.setImageURI(Uri.fromFile(file));
-
+                cardPhoto();
             }
         });
 
+        //take a photo
         Button take = findViewById(R.id.btnTake);
         take.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePhoto();
-
             }
         });
 
-
+        //default use card photo
+//        cardPhoto();
     }
 
+    private void donotShare() {
+        CollectionReference codesRef = db.collection("QRCodes");
+        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
+        docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    //ArrayList<String> userList = (ArrayList<String>) document.get("scanners");
+                    //userList.add(userName);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("sharedPicture", false);
+                    docCodeRef.set(data, SetOptions.merge());
+                }
+            }
+        });
+    }
 
+    private void share() {
+        if(filePath != null) {
+            Date date = new Date(System.currentTimeMillis());
+            SimpleDateFormat sdf = new SimpleDateFormat ("yyyyMMddHHmmss");
+            String image_save_path =  sdf.format(date);
+            StorageReference childRef = storageRef.child(image_save_path+".jpg");
+            //uploading the image
+            Uri uri = Uri.fromFile(new File(filePath));
+//            UploadTask uploadTask = childRef.putFile(uri);
 
+            Bitmap bitmap = resizeImage(filePath, 200, 200);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageData = baos.toByteArray();
+            UploadTask uploadTask = childRef.putBytes(imageData);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //get and save download url
+                            downloadUrl = uri.toString();
+
+                            CollectionReference codesRef = db.collection("QRCodes");
+                            DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
+                            docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        ArrayList<String> urlList = (ArrayList<String>) document.get("http");
+                                        urlList.add(downloadUrl);
+                                        Map<String, Object> data = new HashMap<>();
+                                        data.put("sharedPicture", true);
+                                        data.put("http", urlList);
+                                        docCodeRef.set(data, SetOptions.merge());
+                                    }
+                                }
+
+                            });
+                            Log.e(TAG, "downloadUrl: " + downloadUrl );
+                        }
+                    });
+                    Toast.makeText(SharedPicture.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(SharedPicture.this, "Upload Failed -> " + e, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(SharedPicture.this, "Select an image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void cardPhoto() {
+        ImageView imageView = findViewById(R.id.imgQrcode);
+        File file = new File(imagePath);
+        imageView.setImageURI(Uri.fromFile(file));
+        filePath = imagePath;
+    }
 
     public void notBigPhoto(){
-
         File file = new File(String.valueOf(filePath));
         double size = getFileOrFilesSize(file);
         Log.e("size", ""+size);
@@ -227,11 +254,6 @@ public class SharedPicture extends AppCompatActivity {
             }
 
         }
-
-
-
-
-
     }
 
 
@@ -288,48 +310,42 @@ public class SharedPicture extends AppCompatActivity {
 
 
     public void takePhoto() {
-
-
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, 2);
-
-        //after taking, put on the view
-        //ImageView imageView = findViewById(R.id.imgQrcode);
-        //SharedData appData = (SharedData) getApplication();
-        //imagePath = appData.getImagepath();
-        // File file = new File(imagePath);
-        //imageView.setImageURI(Uri.fromFile(file));
-
-
-
-
-
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
-            Bundle bundle = data.getExtras();
-            //获取相机返回的数据，并转换为Bitmap图片格式，这是缩略图
-            Bitmap bitmap = (Bitmap) bundle.get("data");
-            ImageView imageView = findViewById(R.id.imgQrcode);
-            imageView.setImageBitmap(bitmap);
-            saveScreenShot(bitmap);
-
+//        File outputImage = new File(Environment.getExternalStorageDirectory()+"/outputImage.jpg");
+        filePath = getExternalCacheDir() + "/outputImage.jpg";
+        File outputImage = new File(getExternalCacheDir(), "outputImage.jpg");
+        try {
+            if(outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(Build.VERSION.SDK_INT >= 24) {
+            imageUri = FileProvider.getUriForFile(SharedPicture.this,
+                    "com.example.qrhunter.fileprovider", outputImage);
+        } else {
+            imageUri = Uri.fromFile(outputImage);
         }
 
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, 1);
+    }
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if((requestCode==1) && (resultCode==RESULT_OK) && (data!=null)) {
             try {
-                //getting image from gallery
-                //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-
-                //Setting image to ImageView
-                //imgView.setImageBitmap(bitmap);
-            } catch (Exception e) {
+                Log.e(TAG, "onActivityResult: " + filePath );
+                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                ImageView imageView = findViewById(R.id.imgQrcode);
+                imageView.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -343,32 +359,58 @@ public class SharedPicture extends AppCompatActivity {
         String image_save_path =  sdf.format(date);
 
         File file = new File(extStorageDirectory, image_save_path+".jpg");//创建文件，第一个参数为路径，第二个参数为文件名
-        //String picturePath=file.getPath();
-        //if (!file.exists()) {
-           // file.mkdir();
-       // }
-
 
         try {
-           outStream = new FileOutputStream(file);//创建输入流
-             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-           outStream.close();
-//       这三行可以实现相册更新
+            outStream = new FileOutputStream(file);//创建输入流
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            outStream.close();
+            filePath = extStorageDirectory + image_save_path+".jpg";
+//          这三行可以实现相册更新
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             Uri uri = Uri.fromFile(file);
             intent.setData(uri);
             sendBroadcast(intent);
-
         } catch(Exception e) {
-            Toast.makeText(SharedPicture.this, "exception:" + e,
-                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            Log.e(TAG, "saveScreenShot: " + "Take photo error!" );
+            Toast.makeText(SharedPicture.this, "exception:" + e, Toast.LENGTH_SHORT).show();
         }
     }
 
 
+    private Bitmap resizeImage(String path, int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
 
+        // Calculate inSampleSize
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
 
+        int inSampleSize = 1;
+        if (height > reqHeight) {
+            inSampleSize = Math.round((float)height / (float)reqHeight);
+        }
+
+        int expectedWidth = width / inSampleSize;
+        if (expectedWidth > reqWidth) {
+            //if(Math.round((float)width / (float)reqWidth) > inSampleSize) // If bigger SampSize..
+            inSampleSize = Math.round((float)width / (float)reqWidth);
+        }
+
+        options.inSampleSize = inSampleSize;
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Log.d(TAG, "resizeImage: " + options.outHeight + "," + options.outWidth);
+        return BitmapFactory.decodeFile(path, options);
     }
+
+
+
+}
 
 
 
