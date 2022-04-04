@@ -84,9 +84,10 @@ public class SelectedQrActivity extends AppCompatActivity {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent;
+                finish();
+                //Intent intent;
 //                if (appData.getComefromme()) {
-                    intent = new Intent(SelectedQrActivity.this, UserCode.class);
+                  //  intent = new Intent(SelectedQrActivity.this, UserCode.class);
 //                } else {
 //                    intent = new Intent(SelectedQrActivity.this, SearchUserCode.class);
 //                }

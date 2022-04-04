@@ -53,6 +53,7 @@ public class UserCode extends AppCompatActivity {
     ListView codeList ;
     EditText txtEmail;
     Boolean check = false;
+    long score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,31 +130,55 @@ public class UserCode extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                         if(!check){
+                            HashScore hashScore = new HashScore();
                             String userstr = codeScoreList.get(i).getCode();
-
+                            score =(long)codeScoreList.get(i).getScore();
                             CollectionReference codes = db.collection("QRCodes");
-                            codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            DocumentReference docQrRef = codes.document(hashScore.hash256(userstr));
+                            /** codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+                            boolean exit = false;
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            String ID = doc.getString("qrid");
+                            if (ID.equals(userstr)) {
+                            exit = true;
+                            }
+                            }
+                            if (exit == false) {
+                            showDelete(i);
+                            } else {
+                            appData.setComefromme(true);
+                            Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
+                            intent.putExtra("qrid", userstr);
+                            intent.putExtra("index", i);
+                            Long score = (Long) tmp_codeScoreList.get(i).get("score");
+                            intent.putExtra("score", score);
+                            startActivity(intent);
+                            }
+
+                            }
+                            });**/
+                            docQrRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
-                                public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
-                                        FirebaseFirestoreException error) {
-                                    boolean exit = false;
-                                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                        String ID = doc.getString("qrid");
-                                        if (ID.equals(userstr)) {
-                                            exit = true;
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (task.isSuccessful()) {
+                                        if (!task.getResult().exists()) {
+                                            showDelete(i);
+                                        } else {
+                                            appData.setComefromme(true);
+                                            Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
+                                            intent.putExtra("qrid", userstr);
+                                            intent.putExtra("index", i);
+                                            Long score = (Long) tmp_codeScoreList.get(i).get("score");
+                                            intent.putExtra("score", score);
+                                            startActivity(intent);
+
                                         }
                                     }
-                                    if (exit == false) {
-                                        showDelete(i);
-                                    } else {
-                                        appData.setComefromme(true);
-                                        Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
-                                        intent.putExtra("qrid", userstr);
-                                        intent.putExtra("index", i);
-                                        Long score = (Long) tmp_codeScoreList.get(i).get("score");
-                                        intent.putExtra("score", score);
-                                        startActivity(intent);
-                                    }
+
 
                                 }
                             });
@@ -163,6 +188,8 @@ public class UserCode extends AppCompatActivity {
                         }
                     }
                 });
+
+
 
 
 
@@ -259,7 +286,7 @@ public class UserCode extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot document = task.getResult();
                                 Long totalNumber = document.getLong("total")-1;
-                                Long totalScore = document.getLong("sum")-codeScoreList.get(chosenLine).getScore();
+                                Long totalScore = document.getLong("sum")-score;
                                 codeScoreList.remove(codeScoreList.get(chosen));
                                 docUserRef.update("codes",codeScoreList);
                                 docUserRef.update("total",totalNumber);

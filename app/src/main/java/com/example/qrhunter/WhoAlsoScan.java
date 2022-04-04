@@ -3,8 +3,10 @@ package com.example.qrhunter;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,11 +44,22 @@ public class WhoAlsoScan extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<HashMap> alsoScanList = (ArrayList<HashMap>) document.get("scanners");
-               // Log.d(TAG, "loooooooooool"+alsoScanList);
+                if (task.isSuccessful()) {
+                    if (!task.getResult().exists()) {
+                        showMessage();
+                    } else {
+                        ArrayList<HashMap> alsoScanList = (ArrayList<HashMap>) document.get("scanners");
+                        // Log.d(TAG, "loooooooooool"+alsoScanList);
 
-                qrAdapter = new ArrayAdapter<HashMap>(WhoAlsoScan.this, android.R.layout.simple_list_item_1,alsoScanList);
-                AlsoScanList.setAdapter(qrAdapter);
+                        qrAdapter = new ArrayAdapter<HashMap>(WhoAlsoScan.this, android.R.layout.simple_list_item_1,alsoScanList);
+                        AlsoScanList.setAdapter(qrAdapter);
+
+                    }
+                    Log.d(TAG, "Code documents write success. ");
+                } else {
+                    Log.d(TAG, "Error getting code documents: ", task.getException());
+                }
+
 
             }
         });
@@ -58,5 +71,19 @@ public class WhoAlsoScan extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void showMessage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("The database does not have the code right now!");
+        builder.setTitle("Error");
+        builder.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
