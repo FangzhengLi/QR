@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.qrhunter.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,18 +113,15 @@ public class SelectedQrActivity extends AppCompatActivity {
                     ArrayList<String> tmp_photoList = (ArrayList<String>) document.get("http");
                     Log.d(TAG, "immmmmmmmmmmmmmmmage"+ tmp_photoList.get(0));
                     String http = tmp_photoList.get(0);
-                    Bitmap bitmap = null;
+                    Picasso.get().load(http).into(image);
 
+
+                }else{
+
+                    Toast.makeText(SelectedQrActivity.this, "This code has no image upload.", Toast.LENGTH_SHORT).show();
                 }
 
-                /*
-                ArrayList<String> photoList = new ArrayList<>();
-                for(int i=0;i<tmp_photoList.size();i++){
-                    String tmp = new String();
-                    photoList.add(tmp);
-                }
 
-                 */
             }
         });
 

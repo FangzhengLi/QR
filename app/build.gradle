@@ -61,6 +61,8 @@ dependencies{
 //
 //=======
     implementation 'com.google.firebase:firebase-storage:20.0.1'
-    implementation 'com.squareup.picasso:2.71828'
+
 //>>>>>>> 9a3920e9eac96f05aa9194685a854bdda6297cbf
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
