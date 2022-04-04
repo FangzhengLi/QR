@@ -54,8 +54,10 @@ public class SharedPicture extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 db = FirebaseFirestore.getInstance();
+                HashScore hashScore = new HashScore();
                 CollectionReference codesRef = db.collection("QRCodes");
-                DocumentReference docCodeRef = codesRef.document(qrCode);
+                //DocumentReference docCodeRef = codesRef.document(qrCode);
+                DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
                 docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -116,11 +118,6 @@ public class SharedPicture extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
 
 
 

@@ -121,8 +121,9 @@ public class ShareActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         SharedData appData = (SharedData) getApplication();
         String qrCode = appData.getQrcode();
+        HashScore hashScore = new HashScore();
         CollectionReference qrCodeRef = db.collection("QRCode");
-        DocumentReference docqrCodeRef = qrCodeRef.document(qrCode);
+        DocumentReference docqrCodeRef = qrCodeRef.document(hashScore.hash256(qrCode));
         docqrCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
