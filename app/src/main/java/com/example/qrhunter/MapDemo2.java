@@ -96,7 +96,7 @@ public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
         });
 
         locationRef
-                .whereEqualTo("shareLocation", true)
+                .whereEqualTo("sharedLocation", true)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

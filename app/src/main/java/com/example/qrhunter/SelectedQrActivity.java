@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class SelectedQrActivity extends AppCompatActivity {
@@ -187,7 +188,7 @@ public class SelectedQrActivity extends AppCompatActivity {
                     CodeScore tmp = new CodeScore((String)tmp_codeScoreList.get(i).get("code"),((Long)tmp_codeScoreList.get(i).get("score")).intValue());
                     codeScoreList.add(tmp);
                 }
-
+                Collections.sort(codeScoreList);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SelectedQrActivity.this);
                 builder.setMessage("Are you sure to delete this code?");
                 builder.setTitle("Information");

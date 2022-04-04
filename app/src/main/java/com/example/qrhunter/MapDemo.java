@@ -155,7 +155,7 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
         db = FirebaseFirestore.getInstance();
         CollectionReference locationRef = db.collection("QRCodes");
         locationRef
-                .whereEqualTo("shareLocation", true)
+                .whereEqualTo("sharedLocation", true)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

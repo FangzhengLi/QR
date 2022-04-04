@@ -16,6 +16,7 @@ import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class SharedGeo extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
     double currentlatitude1;
     double currentlongitude1;
-
+    GeoPoint geo = new GeoPoint(0.1, 0.2);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,6 @@ public class SharedGeo extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SharedGeo.this, MainActivity.class);
                 startActivity(intent);
-//                finish();
             }
         });
 
@@ -90,6 +91,8 @@ public class SharedGeo extends AppCompatActivity {
                 //saveGeo();
                 if (ContextCompat.checkSelfPermission(SharedGeo.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     getLastLocation();
+                    Intent intent = new Intent(SharedGeo.this, UserCode.class);
+                    startActivity(intent);
                 } else {
                     askLocationPermission();
 
@@ -99,16 +102,6 @@ public class SharedGeo extends AppCompatActivity {
 
 
     }
-/*
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLastLocation();
-        } else {
-
-        }
-    }*/
 
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -121,13 +114,25 @@ public class SharedGeo extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        db = FirebaseFirestore.getInstance();
+        HashScore hashScore = new HashScore();
+        CollectionReference codesRef = db.collection("QRCodes");
+        DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
         Task<Location> locationTask = fusedLocationProviderClient.getLastLocation();
         locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
+
                 if( location !=null){
                     currentlatitude1=location.getLatitude();
                     currentlongitude1=location.getLongitude();
+                    Log.d("", "sssssssiiiiiihhhhheeeee"+currentlongitude1+",,,,"+currentlatitude1);
+                    com.google.android.gms.maps.model.LatLng latLng = new LatLng(currentlatitude1, currentlongitude1);
+                    docCodeRef.update("sharedLocation",true);
+                    //!!!!!!!!!!!!!!!!!这里不会!!!!!!!!!!!!!!!!!!!
+                    geo = new GeoPoint(currentlatitude1,currentlongitude1);
+                    docCodeRef.update("geoPoint", geo);
+
                 }else{
                     Log.d("显示失败","Success:Location was null");
                 }
@@ -150,29 +155,6 @@ public class SharedGeo extends AppCompatActivity {
             }
         }
     }
-
-
-    public void saveGeo() {
-        // hash
-//        db = FirebaseFirestore.getInstance();
-//        SharedData appData = new SharedData();
-//        HashScore hashScore = new HashScore();
-//        CollectionReference codeRef = db.collection("QRCodes");
-//        DocumentReference docCodeRef = codeRef.document(hashScore.hash256(appData.getQrcodekey()));
-//
-//        docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    Map<String, Object> data = new HashMap<>();
-//                    data.put("shared", true);
-//                    docCodeRef.set(data, SetOptions.merge());
-//                }
-//            }
-//        });
-//    }
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
