@@ -25,6 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This java file is to show the list of users scanned the same qr code
+ * but we did not develop the function about clicking the name of users :)
+ */
 public class WhoAlsoScan extends AppCompatActivity {
     FirebaseFirestore db;
     ArrayAdapter<HashMap> qrAdapter;
@@ -35,7 +39,6 @@ public class WhoAlsoScan extends AppCompatActivity {
         setContentView(R.layout.activity_who_also_scan);
         Intent intent=getIntent();
         String qrid=intent.getStringExtra("qrid");
-        //Log.d(TAG, "从UserCode传递过来的参数"+qrid);
         db = FirebaseFirestore.getInstance();
         CollectionReference qrRef = db.collection("QRCodes");
         DocumentReference docQrRef = qrRef.document(qrid);
@@ -49,8 +52,6 @@ public class WhoAlsoScan extends AppCompatActivity {
                         showMessage();
                     } else {
                         ArrayList<HashMap> alsoScanList = (ArrayList<HashMap>) document.get("scanners");
-                        // Log.d(TAG, "loooooooooool"+alsoScanList);
-
                         qrAdapter = new ArrayAdapter<HashMap>(WhoAlsoScan.this, android.R.layout.simple_list_item_1,alsoScanList);
                         AlsoScanList.setAdapter(qrAdapter);
 

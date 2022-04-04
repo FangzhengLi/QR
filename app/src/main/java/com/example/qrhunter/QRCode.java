@@ -38,7 +38,6 @@ public class QRCode {
         this.sharedLocation = false;
         this.sharedPicture = false;
         this.comment = "";
-        this.geoPoint =null;
         this.scanners = new ArrayList<String>();
         this.http = new ArrayList<String>();
     }

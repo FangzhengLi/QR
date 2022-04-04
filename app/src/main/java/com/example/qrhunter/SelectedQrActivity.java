@@ -22,8 +22,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * This file is to show the details about the selected code
+ */
 public class SelectedQrActivity extends AppCompatActivity {
     String codeDisplay;
     FirebaseFirestore db;
@@ -59,10 +63,8 @@ public class SelectedQrActivity extends AppCompatActivity {
             }
         });
 
-        //button = findViewById(R.id.btnCodeComment);
-        //button.setOnClickListener(this);
 
-        //delete
+        //delete button
         Button deletebutton;
         deletebutton = findViewById(R.id.btnCodeDelete);
         deletebutton.setOnClickListener(new View.OnClickListener() {
@@ -78,20 +80,13 @@ public class SelectedQrActivity extends AppCompatActivity {
         });
 
 
-        //back按钮的功能
+        //back button
         Button backbutton;
         backbutton = findViewById(R.id.btnBackToCodeList);
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-                //Intent intent;
-//                if (appData.getComefromme()) {
-                  // intent = new Intent(SelectedQrActivity.this, UserCode.class);
-//                } else {
-//                    intent = new Intent(SelectedQrActivity.this, SearchUserCode.class);
-//                }
-                //startActivity(intent);
             }
         });
 
@@ -113,7 +108,7 @@ public class SelectedQrActivity extends AppCompatActivity {
             }
         });
 
-        //displayCodeInformation();
+        //show the score of the code
         Long score = intent.getLongExtra("score", 0);
         TextView scoretxt = findViewById(R.id.txtCodeScore);
         scoretxt.setText("Score: " + score.toString());
@@ -133,7 +128,7 @@ public class SelectedQrActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         DocumentSnapshot document = task.getResult();
                         locationOr = document.getBoolean("sharedLocation");
-                        //Log.e(TAG, "" + locationOr);
+                        // check the code shared the location or not
                         if (locationOr == false) {
                             ShowMessage();
                         } else {
@@ -165,12 +160,12 @@ public class SelectedQrActivity extends AppCompatActivity {
         dlg.show();
     }
 
-
-    //删除代码
+    /**
+     * delete the code
+     */
     private void deleteCode() {
         Intent intent = getIntent();
         Integer i = intent.getIntExtra("index", 0);
-        //String i = intent.getStringExtra("index");
         SharedData appData = (SharedData) getApplication();
         String username = appData.getUsername();
         CollectionReference userRef = db.collection("Users");
@@ -187,15 +182,15 @@ public class SelectedQrActivity extends AppCompatActivity {
                     CodeScore tmp = new CodeScore((String)tmp_codeScoreList.get(i).get("code"),((Long)tmp_codeScoreList.get(i).get("score")).intValue());
                     codeScoreList.add(tmp);
                 }
-
+                Collections.sort(codeScoreList);
                 AlertDialog.Builder builder = new AlertDialog.Builder(SelectedQrActivity.this);
+                //asking to delete the code or not
                 builder.setMessage("Are you sure to delete this code?");
                 builder.setTitle("Information");
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // delete
-                        Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + " deleting code xdxdxdxdxdxdxdxdxdxdxdxd");
+                        // delete the code
                         codeScoreList.remove(codeScoreList.get(i));
                         docUserRef.update("codes",codeScoreList);
                         docUserRef.update("total",totalNumber-1);
@@ -217,7 +212,7 @@ public class SelectedQrActivity extends AppCompatActivity {
     public void ShowMessage(){
         android.app.AlertDialog dlg =new android.app.AlertDialog.Builder(SelectedQrActivity.this)
                 .setTitle("The code has no Location")
-                .setMessage("The code do not have Location, can not check the mao")
+                .setMessage("The code do not have Location, can not check the map")
                 .setPositiveButton("Now I know that", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

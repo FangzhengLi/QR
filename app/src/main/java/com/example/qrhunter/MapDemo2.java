@@ -32,6 +32,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
+/**
+ * This java file displays QR codes near the QR code selected by the user.
+ */
 public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -64,13 +67,16 @@ public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
     }
 
     /**
+     *
+     * @param googleMap
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * Add markers for the QR codes in the Firestore
+     * Show the score of each QR code.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -96,7 +102,7 @@ public class MapDemo2 extends FragmentActivity implements OnMapReadyCallback {
         });
 
         locationRef
-                .whereEqualTo("shareLocation", true)
+                .whereEqualTo("sharedLocation", true)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

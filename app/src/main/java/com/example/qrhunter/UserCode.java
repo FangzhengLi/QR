@@ -36,7 +36,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-//see user's profile
+
+/**
+ * This java file is to show the code list of the user and the contact information of user
+ */
 public class UserCode extends AppCompatActivity {
 
     FirebaseFirestore db;
@@ -61,7 +64,6 @@ public class UserCode extends AppCompatActivity {
         setContentView(R.layout.activity_usercode);
 
         // get the name of the user and show on the top
-
         SharedData appData = (SharedData) getApplication();
         TextView txtUsername = findViewById(R.id.txtUsername);
         username = appData.getUsername();
@@ -86,15 +88,14 @@ public class UserCode extends AppCompatActivity {
 
         CollectionReference userRef = db.collection("Users");
         DocumentReference docUserRef = userRef.document(username);
-        //DocumentReference docUserRef = userRef.document(searchName);
         docUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
+                //get data from the database
                 Long totalScore = document.getLong("sum");
                 Long totalNumber = document.getLong("total");
                 String userEmail = document.getString("userEmail");
-                //ArrayList<CodeScore> codeScoreList = (ArrayList<CodeScore>) document.get("codes");
                 ArrayList<HashMap> tmp_codeScoreList = (ArrayList<HashMap>) document.get("codes");
                 codeScoreList = new ArrayList<>();
 
@@ -104,13 +105,12 @@ public class UserCode extends AppCompatActivity {
                 }
 
 
-                //ArrayAdapter<CodeScore> codeAdapter;111
                 codeAdapter = new ArrayAdapter<CodeScore>(UserCode.this, android.R.layout.simple_list_item_1,codeScoreList);
                 txtTotalScore.setText(totalScore.toString());
                 txtNumber.setText(totalNumber.toString());
                 txtEmail.setText(userEmail);
                 codeList.setAdapter(codeAdapter);
-
+                //the button to update the contact information
                 Button changeEmail = findViewById(R.id.change_email);
                 changeEmail.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -135,31 +135,6 @@ public class UserCode extends AppCompatActivity {
                             score =(long)codeScoreList.get(i).getScore();
                             CollectionReference codes = db.collection("QRCodes");
                             DocumentReference docQrRef = codes.document(hashScore.hash256(userstr));
-                            /** codes.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
-                            FirebaseFirestoreException error) {
-                            boolean exit = false;
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                            String ID = doc.getString("qrid");
-                            if (ID.equals(userstr)) {
-                            exit = true;
-                            }
-                            }
-                            if (exit == false) {
-                            showDelete(i);
-                            } else {
-                            appData.setComefromme(true);
-                            Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
-                            intent.putExtra("qrid", userstr);
-                            intent.putExtra("index", i);
-                            Long score = (Long) tmp_codeScoreList.get(i).get("score");
-                            intent.putExtra("score", score);
-                            startActivity(intent);
-                            }
-
-                            }
-                            });**/
                             docQrRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -169,13 +144,13 @@ public class UserCode extends AppCompatActivity {
                                             showDelete(i);
                                         } else {
                                             appData.setComefromme(true);
+                                            //to the activity about showing the detail of the code
                                             Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
                                             intent.putExtra("qrid", userstr);
                                             intent.putExtra("index", i);
                                             long score = codeScoreList.get(i).getScore();
                                             intent.putExtra("score", score);
                                             startActivity(intent);
-
                                         }
                                     }
 
@@ -188,11 +163,6 @@ public class UserCode extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
-
                 Collections.sort(codeScoreList);
                 codeAdapter.notifyDataSetChanged();
                 if (codeScoreList.size()>=1) {
