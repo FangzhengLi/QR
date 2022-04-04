@@ -71,8 +71,6 @@ public class SearchUserCode extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 Long totalScore = document.getLong("sum");
                 Long totalNumber = document.getLong("total");
-                String userEmail = document.getString("userEmail");
-                //ArrayList<CodeScore> codeScoreList = (ArrayList<CodeScore>) document.get("codes");
                 ArrayList<HashMap> tmp_codeScoreList = (ArrayList<HashMap>) document.get("codes");
                 codeScoreList = new ArrayList<>();
 
@@ -98,6 +96,7 @@ public class SearchUserCode extends AppCompatActivity {
                 codeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                         String userstr=codeScoreList.get(i).getCode();
 
                         CollectionReference codes  = db.collection("QRCodes");
@@ -105,19 +104,20 @@ public class SearchUserCode extends AppCompatActivity {
                             @Override
                             public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
                                     FirebaseFirestoreException error) {
-//                                boolean exit = false;
-//                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-//                                    String ID = doc.getString("qrid");
-//                                    Intent intent=new Intent(SearchUserCode.this,SelectedSearchUserQr.class);
-//                                    intent.putExtra("qrid",userstr);
-//                                    intent.putExtra("index", i);
-//                                    intent.putExtra("UserName",userName);
-//                                    Long score = (Long)tmp_codeScoreList.get(i).get("score");
-//                                    intent.putExtra("score", score);
-//                                    startActivity(intent);}
+                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                    String ID = doc.getId();
+                                    Intent intent=new Intent(SearchUserCode.this,SelectedSearchUserQr.class);
+                                    intent.putExtra("qrid",userstr);
+                                    intent.putExtra("index", i);
+                                    intent.putExtra("searchedUserName",userName);
+                                    long score = codeScoreList.get(i).getScore();
+                                    intent.putExtra("score", score);
+                                    startActivity(intent);}
+                            }
+                                /*
                                 boolean exit = false;
                                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                    String ID = doc.getString("qrid");
+                                    String ID = doc.getId();
                                     if (ID.equals(userstr)) {
                                         exit = true;
                                     }
@@ -132,15 +132,15 @@ public class SearchUserCode extends AppCompatActivity {
                                     intent.putExtra("index", i);
                                     intent.putExtra("searchedUserName", userName);
                                     Log.d(TAG, "---------------------------------==" + userName);
-                                    Long score = (Long) tmp_codeScoreList.get(i).get("score");
+                                    long score = codeScoreList.get(i).getScore();
                                     intent.putExtra("score", score);
                                     startActivity(intent);
                                 }
-
                             }
                         });
 
-
+                                 */
+                    });
                     }
                 });
             }

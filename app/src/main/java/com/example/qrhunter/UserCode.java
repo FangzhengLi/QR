@@ -172,7 +172,7 @@ public class UserCode extends AppCompatActivity {
                                             Intent intent = new Intent(UserCode.this, SelectedQrActivity.class);
                                             intent.putExtra("qrid", userstr);
                                             intent.putExtra("index", i);
-                                            Long score = (Long) tmp_codeScoreList.get(i).get("score");
+                                            long score = codeScoreList.get(i).getScore();
                                             intent.putExtra("score", score);
                                             startActivity(intent);
 

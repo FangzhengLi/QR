@@ -310,14 +310,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (!task.getResult().exists()) {
                         showMessage("User not found.");
                     } else {
+
                         appData.setSearchname(SearchName);
 
                         Intent intent = new Intent(MainActivity.this, UserProfile.class);
+
+
                         startActivity(intent);
+
+
                         //Button go = findViewById(R.id.search_btn);
-                        // go.setOnClickListener(new View.OnClickListener() {
-                        /// @Override
-                        //  public void onClick(View view) {
+                         //go.setOnClickListener(new View.OnClickListener() {
+                         //@Override
+                          //public void onClick(View view) {
                         // Intent intent = new Intent(MainActivity.this, UserProfile.class);
                         // intent.putExtra("username",SearchName);
                         //Intent intent = new Intent(MainActivity.this, UserCode.class);
