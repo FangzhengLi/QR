@@ -45,6 +45,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
+/**
+ *This file is mainly responsible for searching on the map and moving the camera to the searched location.
+ */
 public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -71,19 +74,12 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
             }
         });
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        /**
+         * Obtain the SupportMapFragment and get notified when the map is ready to be used.
+         *
+         * At the same time, search for nearby QR codes and display them on the map.
+         * */
 
-
-        /*Button mylocation = findViewById(R.id.currentlocation);
-        mylocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-         */
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -120,13 +116,17 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
 
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * @link #onMapReady(GoogleMap)
+     * @param googleMap
+     * This function is mainly responsible for the preparation of the map before it is displayed.
+     *  This callback is triggered when the map is ready to be used.
+     *  This is where we can add markers from the firestore, add listeners or move the camera.
+     *  We add multiple markers from the firestore.The markers represent QR codes.
+     *  Obtain permission for the app to access the location of the phone.
+     *  Get the user's current location and display QR codes near them.
+     *  Search for QR codes entered by the user and display QR codes near the searched location
+     *  Display the distance of each QR code to the user's current location
+     * Show the score of each QR code
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -191,6 +191,10 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
 
     }
 
+    /**
+     * @link enableUserLocation
+     * @param
+     */
     private void enableUserlocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -205,6 +209,11 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
         mMap.setMyLocationEnabled(true);
     }
 
+    /**
+     * Get the latitude and longitude of the current position to calculate the distance
+     *
+     * @param
+     */
     private void getcurrentlocationcoordinatestr() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -228,8 +237,12 @@ public class MapDemo extends FragmentActivity implements OnMapReadyCallback {
         });
 
     }
-  
 
+    /**
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
