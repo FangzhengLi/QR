@@ -87,11 +87,11 @@ public class SelectedQrActivity extends AppCompatActivity {
                 finish();
                 //Intent intent;
 //                if (appData.getComefromme()) {
-                  //  intent = new Intent(SelectedQrActivity.this, UserCode.class);
+                  // intent = new Intent(SelectedQrActivity.this, UserCode.class);
 //                } else {
 //                    intent = new Intent(SelectedQrActivity.this, SearchUserCode.class);
 //                }
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -101,9 +101,15 @@ public class SelectedQrActivity extends AppCompatActivity {
         commbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent comment = new Intent(SelectedQrActivity.this, CodeCommentActivity.class);
-                comment.putExtra("qrid", qrid);
-                startActivity(comment);
+                if(check==false){
+                    Intent comment = new Intent(SelectedQrActivity.this, CodeCommentActivity.class);
+                    comment.putExtra("qrid", qrid);
+                    startActivity(comment);
+                }
+                else{
+                    showdetail();
+                }
+
             }
         });
 
