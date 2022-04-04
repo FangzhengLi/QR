@@ -1,12 +1,16 @@
 package com.example.qrhunter;
 
+import static android.content.ContentValues.TAG;
 import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,16 +27,21 @@ import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +49,15 @@ public class SharedPicture extends AppCompatActivity {
     String imagePath;
     FirebaseFirestore db;
     String qrCode;
+    private final static int mWidth = 512;
+    private final static int mLength = 512;
 
+    private ArrayList<String> pathArray;
+    private int array_position;
+
+    private ProgressDialog mProgressDialog;
+    private StorageReference mStorageRef;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +66,7 @@ public class SharedPicture extends AppCompatActivity {
         SharedData appData = (SharedData) getApplication();
         qrCode = appData.getQrcode();
 
-        Button notBtn =findViewById(R.id.btntxt);
+        Button notBtn = findViewById(R.id.btntxt);
         notBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,11 +91,11 @@ public class SharedPicture extends AppCompatActivity {
             }
         });
 
-        Button share =findViewById(R.id.btnShare);
+        Button share = findViewById(R.id.btnShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               notBigPhoto();
+                notBigPhoto();
                 //Intent intent = new Intent(SharedPicture.this, SharedGeo.class);
                 //startActivity(intent);
 
@@ -120,24 +137,21 @@ public class SharedPicture extends AppCompatActivity {
         });
 
 
-
     }
 
 
-
-
-    public void notBigPhoto(){
+    public void notBigPhoto() {
         SharedData appData = (SharedData) getApplication();
         imagePath = appData.getImagepath();
         File file = new File(imagePath);
         double size = getFileOrFilesSize(file);
         //Log.e(TAG, ""+size);
-        if(size<=64){
+        if (size <= 64) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//Environment.getExternalStorageDirectory().getAbsolutePath() + "/compresstest/test.png"
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             String str = "2";
             int quality = Integer.parseInt(str);
-            if(bitmap != null) {
+            if (bitmap != null) {
 //            bitmap.compress(Bitmap.CompressFormat.PNG, quality, baos); // 设置Bitmap.CompressFormat.PNG，quality将不起作用，PNG是无损压缩
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
                 byte[] bytes = baos.toByteArray();
@@ -149,7 +163,6 @@ public class SharedPicture extends AppCompatActivity {
             }
 
         }
-
 
 
         //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//Environment.getExternalStorageDirectory().getAbsolutePath() + "/compresstest/test.png"
@@ -196,7 +209,7 @@ public class SharedPicture extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-           // Log.e("fail","not exist!");
+            // Log.e("fail","not exist!");
         }
         return FormetFileSize(blockSize);
     }
@@ -230,13 +243,13 @@ public class SharedPicture extends AppCompatActivity {
             size = fis.available();
         } else {
             file.createNewFile();
-           // Log.e("fail","not exit!");
+            // Log.e("fail","not exit!");
         }
         return size;
     }
 
 
-    public void takePhoto(){
+    public void takePhoto() {
         startCamera();
         //take photo save at sharedData which use to check the picture size, put on the view
 
@@ -245,9 +258,10 @@ public class SharedPicture extends AppCompatActivity {
         //ImageView imageView = findViewById(R.id.imgQrcode);
         //SharedData appData = (SharedData) getApplication();
         //imagePath = appData.getImagepath();
-       // File file = new File(imagePath);
+        // File file = new File(imagePath);
         //imageView.setImageURI(Uri.fromFile(file));
     }
+
     private void startCamera() {
         //可以打开摄像头并照相
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -266,14 +280,15 @@ public class SharedPicture extends AppCompatActivity {
     }
 
     //save the picture on the firebase
-    public void savePhoto(){
+
+    public void savePhoto() {
         // hash
 //        db = FirebaseFirestore.getInstance();
 //        SharedData appData = new SharedData();
 //        HashScore hashScore = new HashScore();
 //        CollectionReference codeRef = db.collection("QRCodes");
 //        DocumentReference docCodeRef = codeRef.document(hashScore.hash256(appData.getQrcodekey()));
-//
+
 //        docCodeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //            @Override
 //            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -284,7 +299,6 @@ public class SharedPicture extends AppCompatActivity {
 //                }
 //            }
 //        });
-
+//
     }
-
 }
