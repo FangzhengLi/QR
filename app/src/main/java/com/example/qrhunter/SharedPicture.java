@@ -95,6 +95,7 @@ public class SharedPicture extends AppCompatActivity {
             }
         });
 
+        /*
         //pick a photo
         Button select = findViewById(R.id.btnSelect);
         select.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +107,8 @@ public class SharedPicture extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
             }
         });
+
+         */
 
         //share
         Button share = findViewById(R.id.btnShare);
