@@ -12,6 +12,7 @@ public class QRCode {
     private String comment;
     private GeoPoint geoPoint;
     ArrayList<String> scanners;
+    ArrayList<String> http;
 
     public QRCode() {}
 
@@ -39,6 +40,7 @@ public class QRCode {
         this.comment = "";
         this.geoPoint =null;
         this.scanners = new ArrayList<String>();
+        this.http = new ArrayList<String>();
     }
 
     public void setScore(int score) {
