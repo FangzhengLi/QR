@@ -33,10 +33,29 @@
 
     <Button
         android:id="@+id/btnSignup"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:layout_gravity="center"
         android:text="Sign Up" />
+
+    <TextView
+        android:id="@+id/txtSignin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:text="Now to sign in"
+        android:textSize="16dp"
+        android:textColor="@color/purple_200"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/userQRCode"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center" />
 
 </LinearLayout>
