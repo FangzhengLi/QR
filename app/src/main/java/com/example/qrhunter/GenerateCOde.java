@@ -29,7 +29,6 @@ import java.io.IOException;
 
 public class GenerateCOde extends AppCompatActivity {
     ImageView SignInCode;
-    ImageView ProfileCode;
     Button back;
     String username;
     SharedData appData;
@@ -41,15 +40,13 @@ public class GenerateCOde extends AppCompatActivity {
         appData = (SharedData) getApplication();
         username = appData.getUsername();
 
-
+        //set the value for generate QR code
         SignInCode = findViewById(R.id.SigninCode);
         String SignInQrVl = username;
-        //String ProfileQrVl = username + "Profile";
         Bitmap SignInQR = createBitmap(SignInQrVl);
-        //Bitmap ProfileQR = createBitmap(ProfileQrVl);
         SignInCode.setImageBitmap(SignInQR);
-        //ProfileCode.setImageBitmap(ProfileQR);
 
+        //set the button for go back to the main page
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,27 +55,17 @@ public class GenerateCOde extends AppCompatActivity {
             }
         });
 
-        ActivityCompat.requestPermissions(GenerateCOde.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        ActivityCompat.requestPermissions(GenerateCOde.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        SignInCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SaveToGallery();
-            }
-        });
-
-
     }
 
-    //still need to implement for Profile QR Code
 
+    //generate the QR code
     private Bitmap createBitmap(String signInQrVl) {
         BitMatrix result = null;
         try {
             result = new MultiFormatWriter().encode(signInQrVl,
                     BarcodeFormat.QR_CODE,
-                    220,
-                    220);
+                    440,
+                    440);
         } catch (WriterException e) {
             e.printStackTrace();
             return null;
@@ -97,32 +84,4 @@ public class GenerateCOde extends AppCompatActivity {
         return myBitmap;
     }
 
-    private void SaveToGallery(){
-        BitmapDrawable bitmapdrawable = (BitmapDrawable) SignInCode.getDrawable();
-        Bitmap bitmap = bitmapdrawable.getBitmap();
-
-        FileOutputStream fileoutputstream = null;
-        File file = Environment.getExternalStorageDirectory();
-        File dir = new File(file.getAbsolutePath() + "/MyPics");
-        dir.mkdirs();
-
-        String filename = String.format("%d.png", System.currentTimeMillis());
-        File outFile = new File(dir, filename);
-        try {
-            fileoutputstream = new FileOutputStream(outFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileoutputstream);
-        try {
-            fileoutputstream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            fileoutputstream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
