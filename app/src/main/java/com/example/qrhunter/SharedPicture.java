@@ -116,7 +116,7 @@ public class SharedPicture extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //modify the share
-//               notBigPhoto();
+                notBigPhoto();
                 share();
                 Intent intent1 = new Intent(SharedPicture.this, SharedGeo.class);
                 startActivity(intent1);
@@ -241,11 +241,11 @@ public class SharedPicture extends AppCompatActivity {
     }
 
     public void notBigPhoto(){
-        File file = new File(String.valueOf(filePath));
+        File file = new File(filePath);
         double size = getFileOrFilesSize(file);
-        Log.e("size", ""+size);
+      //  Log.e("size", ""+size);
         if(size<=64){
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//Environment.getExternalStorageDirectory().getAbsolutePath() + "/compresstest/test.png"
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);//Environment.getExternalStorageDirectory().getAbsolutePath() + "/compresstest/test.png"
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             String str = "2";
             int quality = Integer.parseInt(str);
