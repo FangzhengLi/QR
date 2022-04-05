@@ -67,7 +67,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 //                        Log.d("TAG", "No such document");
                         docRef.set(Account);
 
-                        Intent intent = new Intent(SignupActivity.this, SigninActivity.class);
+                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
                 } else {
