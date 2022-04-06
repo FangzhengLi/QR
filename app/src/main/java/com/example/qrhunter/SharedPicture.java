@@ -156,6 +156,10 @@ public class SharedPicture extends AppCompatActivity {
 //        cardPhoto();
     }
 
+    /**
+     * do not share the picture
+     */
+
     private void donotShare() {
         CollectionReference codesRef = db.collection("QRCodes");
         DocumentReference docCodeRef = codesRef.document(hashScore.hash256(qrCode));
@@ -173,6 +177,10 @@ public class SharedPicture extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * share the picture
+     */
 
     private void share() {
         if(filePath != null) {
@@ -233,6 +241,9 @@ public class SharedPicture extends AppCompatActivity {
         }
     }
 
+    /**
+     * save the image path
+     */
     private void cardPhoto() {
         ImageView imageView = findViewById(R.id.imgQrcode);
         File file = new File(imagePath);
@@ -240,6 +251,9 @@ public class SharedPicture extends AppCompatActivity {
         filePath = imagePath;
     }
 
+    /**
+     * check the picture size and resize
+     */
     public void notBigPhoto(){
         File file = new File(filePath);
         double size = getFileOrFilesSize(file);
@@ -260,7 +274,11 @@ public class SharedPicture extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * get the file
+     * @param file
+     * @return static
+     */
     public static double getFileOrFilesSize(File file) {
 
         long blockSize = 0;
@@ -277,6 +295,12 @@ public class SharedPicture extends AppCompatActivity {
         return FormetFileSize(blockSize);
     }
 
+    /**
+     * change the  size format
+     * @param fileS
+     * @return
+     */
+
     private static double FormetFileSize(long fileS) {
         DecimalFormat df = new DecimalFormat("#.00");
         double fileSizeLong = 0;
@@ -285,6 +309,12 @@ public class SharedPicture extends AppCompatActivity {
 
     }
 
+    /**
+     * get file size
+     * @param f
+     * @return
+     * @throws Exception
+     */
     private static long getFileSizes(File f) throws Exception {
         long size = 0;
         File flist[] = f.listFiles();
@@ -297,6 +327,13 @@ public class SharedPicture extends AppCompatActivity {
         }
         return size;
     }
+
+    /**
+     * get file size
+     * @param file
+     * @return
+     * @throws Exception
+     */
 
     private static long getFileSize(File file) throws Exception {
         long size = 0;
@@ -312,7 +349,9 @@ public class SharedPicture extends AppCompatActivity {
     }
 
 
-
+    /**
+     * take photo
+     */
     public void takePhoto() {
 //        File outputImage = new File(Environment.getExternalStorageDirectory()+"/outputImage.jpg");
         filePath = getExternalCacheDir() + "/outputImage.jpg";
@@ -381,7 +420,13 @@ public class SharedPicture extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * resize the photo
+     * @param path
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     private Bitmap resizeImage(String path, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();

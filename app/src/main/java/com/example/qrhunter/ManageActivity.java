@@ -7,6 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * this interface for owners have 2 special function
+ * delete user and code from database
+ */
+
 public class ManageActivity extends AppCompatActivity {
 
     @Override

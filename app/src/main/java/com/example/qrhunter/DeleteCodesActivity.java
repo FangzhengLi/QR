@@ -29,6 +29,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This file is mainly responsible for owner to delete QRCode in the database.
+ *
+ */
+
 public class DeleteCodesActivity extends AppCompatActivity {
     FirebaseFirestore db;
     private ListView codeList;
@@ -54,27 +59,24 @@ public class DeleteCodesActivity extends AppCompatActivity {
         SharedData appData = (SharedData) getApplication();
         String user = appData.getUsername();
 
-       /**b = FirebaseFirestore.getInstance();
-        final CollectionReference collectionReference1 = db.collection("Users");
-         collectionReference1.addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent(@Nullable final QuerySnapshot queryDocumentSnapshots, @Nullable
-        FirebaseFirestoreException error) {
-        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-            if (user.equals(doc.getId())) {
-                ID = (String) doc.getData().get("userID");
-            }
-            Log.e("Id",ID );
-        }}
-        });**/
-
-
+        /**
+         * the way to delete a code is that:
+         * owner firstly click a code
+         * then click Delete Button
+         */
         codeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 chosenLine=i;
             }
         });
+
+        /**
+         * owner can click long on the code item to check the code detail
+         * but it only check the location and score
+         * can not delete in the detail interface
+         * and can not comment it, if want can go to the profile or search the code
+         */
 
         codeList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -97,13 +99,6 @@ public class DeleteCodesActivity extends AppCompatActivity {
 
                         } });
 
-               /** Intent intent=new Intent(UserCode.this,SelectedQrActivity.class);
-                intent.putExtra("qrid",userstr);
-                intent.putExtra("index", i);
-                intent.putExtra("score", score);
-                startActivity(intent);
-                return true;
-                **/
                return false;
             }
         });
@@ -140,17 +135,13 @@ public class DeleteCodesActivity extends AppCompatActivity {
                     codeAdapter.notifyDataSetChanged();
                     chosenLine=0;
 
-                //}
-               /// else{
-                 ///   Log.e("cannot","this is own" );
-              //  }
-               // db = FirebaseFirestore.getInstance();
-               // final CollectionReference collectionReference = db.collection("Users");
 
             }
 
         });
-
+/**
+ * make the list show by using data from database
+ */
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

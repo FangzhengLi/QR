@@ -233,6 +233,12 @@ public class UserCode extends AppCompatActivity {
 
     }
 
+    /**
+     * if the code do not exist in the database , user can have the score
+     * but cannot check the detail
+     * and only can delete by this way
+     * @param chosen
+     */
     public void showDelete(int chosen){
         AlertDialog dlg =new AlertDialog.Builder(UserCode.this)
                 .setTitle("QR Code is not exist1")
@@ -283,6 +289,10 @@ public class UserCode extends AppCompatActivity {
         dlg.show();
 
     }
+
+    /**
+     * show the message
+     */
 
     public void showMessage(){
         AlertDialog dlg =new AlertDialog.Builder(UserCode.this)
