@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,7 +63,17 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 saveAccount(account, "");
                 break;
             case R.id.txtSignin:
-                Intent intent = new Intent(SignupActivity.this, SigninActivity.class);
+                // 把登录信息保存到本地文件中
+                SharedPreferences.Editor editor = getSharedPreferences("QRHunter", MODE_PRIVATE).edit();
+                editor.putString("userName", account);
+                editor.putString("userPassword", "");
+                editor.apply();
+                // 把登录信息放到appData
+                SharedData appData = (SharedData)  getApplication();
+                appData.setUsername(account);
+                appData.setPlayerName(account);
+
+                Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -106,7 +117,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         });
 
     }
-
+//
     private Bitmap createBitmap(String signInQrVl) {
         BitMatrix result = null;
         try {

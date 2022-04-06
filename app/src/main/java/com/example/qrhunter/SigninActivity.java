@@ -26,8 +26,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+/**
+ *This file is signin activity. When user sign the app can remember user by itself. User no need to login everytime unless user click sign out
+ */
 
-//signin, and remember me
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     String savedName;
@@ -38,10 +40,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
-        Button btnTmp;
+//        Button btnTmp;
         TextView txtTmp;
-        btnTmp = (Button) findViewById(R.id.btnSignin);
-        btnTmp.setOnClickListener(this);
+//        btnTmp = (Button) findViewById(R.id.btnSignin);
+//        btnTmp.setOnClickListener(this);
         txtTmp = (TextView) findViewById(R.id.txtSignup);
         txtTmp.setOnClickListener(this);
         txtTmp = (TextView) findViewById(R.id.txtSigninQRCode);
@@ -53,6 +55,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            /*
             case R.id.btnSignin:
                 final EditText edtTmp;
 
@@ -62,10 +65,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     showMessage("Account can't be empty!");
                     edtTmp.requestFocus();
                     return;
-                } else {
-                    signin2(account);
-                    break;
                 }
+                signin(account);
+                break;
+             */
             case R.id.txtSignup:
                 Intent intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
@@ -102,7 +105,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 //                startActivity(intent);
                 signin(result.getContents());
 
-
             } else {
                 Toast.makeText(this, "No Result", Toast.LENGTH_LONG).show();
             }
@@ -127,7 +129,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 //                        edtTmp.requestFocus();
                         return;
                     } else {
-                        //showMessage("Existing Account,Please Use QR Code Sign In ");
 //                    for (QueryDocumentSnapshot document : task.getResult()) {
                         QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
                         appData.setUsername(document.getId());
@@ -142,9 +143,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                             editor.putString("userName", account);
                             editor.putString("userPassword", "");
                             editor.apply();
-
                         }
-
                         Intent intent = new Intent(SigninActivity.this, MainActivity.class);
                         startActivity(intent);
 //                    }
@@ -155,50 +154,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
-    private void signin2(String account) {
-        SharedData appData = (SharedData) getApplication();
-        FirebaseFirestore db;
-        db = FirebaseFirestore.getInstance();
-        CollectionReference usersRef = db.collection("Users");
-        usersRef.whereEqualTo("userName", account)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().isEmpty()) {
-                        showMessage("Account or password error");
-//                        edtTmp.requestFocus();
-                        return;
-                    } else {
-                        showMessage("Existing Account,Please Use QR Code Sign In ");
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
-                        appData.setUsername(document.getId());
-                        appData.setPlayerName(document.getId());
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-//                        Log.d("TAG", "onComplete1: " + " => " + document.toObject(User.class));
-//                        Log.d("TAG", "onComplete2: " + " => " + appData.getUser().getName() + "  " + appData.getUser().getPassword());
-                        CheckBox chkTmp = (CheckBox) findViewById(R.id.chkRemember);
-                        if (chkTmp.isChecked()) {
-                            // 把登录信息保存到本地文件中
-                            SharedPreferences.Editor editor = getSharedPreferences("QRHunter", MODE_PRIVATE).edit();
-                            editor.putString("userName", account);
-                            editor.putString("userPassword", "");
-                            editor.apply();
-
-                        }
-
-                        //Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-                        //startActivity(intent);
-//                    }
-                    }
-                } else {
-                    Log.d("TAG", "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);
