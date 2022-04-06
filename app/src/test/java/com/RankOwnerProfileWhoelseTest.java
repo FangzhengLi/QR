@@ -4,20 +4,21 @@ package com;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.example.qrhunter.RankOwnerProfileList;
+import com.example.qrhunter.RankOwnerProfileWhoelseList;
 import com.example.qrhunter.User;
 
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class RankOwnerProfileTest {
+public class RankOwnerProfileWhoelseTest {
 
-
+    /**
+     * test sort
+     */
 
     @Test
-    public void testSortTotal(){
-        RankOwnerProfileList list = new RankOwnerProfileList();
+    public void testSort(){
+        RankOwnerProfileWhoelseList list = new RankOwnerProfileWhoelseList();
         User user1 = new User("A1", 26);
         User user2 = new User("A2", 57);
         User user3 = new User("A3", 68);
@@ -28,9 +29,13 @@ public class RankOwnerProfileTest {
     }
 
 
+    /**
+     * test find user
+     */
+
     @Test
     public void testFind(){
-        RankOwnerProfileList list = new RankOwnerProfileList();
+        RankOwnerProfileWhoelseList list = new RankOwnerProfileWhoelseList();
         User user1 = new User("A1", 26);
         User user2 = new User("A2", 57);
         User user3 = new User("A3", 68);
@@ -40,11 +45,17 @@ public class RankOwnerProfileTest {
         String userId = "A1";
         assertEquals(1, list.find(userId));
 
+
+
     }
+
+    /**
+     * test delete
+     */
 
     @Test
     public void testDelete() {
-        RankOwnerProfileList list = new RankOwnerProfileList();
+        RankOwnerProfileWhoelseList list = new RankOwnerProfileWhoelseList();
         User user1 = new User("A1", 26);
         User user2 = new User("A2", 57);
         User user3 = new User("A3", 68);
@@ -62,9 +73,12 @@ public class RankOwnerProfileTest {
 
     }
 
+    /**
+     * test find lowest user
+     */
     @Test
     public void testLow(){
-        RankOwnerProfileList list = new RankOwnerProfileList();
+        RankOwnerProfileWhoelseList list = new RankOwnerProfileWhoelseList();
         User user1 = new User("A1", 26);
         User user2 = new User("A2", 57);
         User user3 = new User("A3", 68);
@@ -76,10 +90,12 @@ public class RankOwnerProfileTest {
         assertEquals("A1",list.findLow());
     }
 
-
+    /**
+     * test find highest user
+     */
     @Test
     public void testHigh(){
-        RankOwnerProfileList list = new RankOwnerProfileList();
+        RankOwnerProfileWhoelseList list = new RankOwnerProfileWhoelseList();
         User user1 = new User("A1", 26);
         User user2 = new User("A2", 57);
         User user3 = new User("A3", 68);

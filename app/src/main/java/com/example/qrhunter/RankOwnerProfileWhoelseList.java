@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class RankOwnerProfileList {
+public class RankOwnerProfileWhoelseList {
 
     ArrayList<User> list = new ArrayList<>();
 
     /**
-     * This adds a city to the list if the city does not exist
+     * This adds a user to the list if the city does not exist
      * @param user
      *      This is a candidate city to add
      */
@@ -22,7 +22,10 @@ public class RankOwnerProfileList {
     }
 
 
-
+    /**
+     * sort the userlist from highest to lowest
+     * @return
+     */
     public List<User> sort() {
         ArrayList<User> list1 = new ArrayList<>();
         Collections.sort(list, new Comparator<User>() {
@@ -36,7 +39,11 @@ public class RankOwnerProfileList {
         return list1;
     }
 
-
+    /**
+     * find the user in the list
+     * @param userId
+     * @return
+     */
     public int find(String userId) {
         int position = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -48,7 +55,11 @@ public class RankOwnerProfileList {
         return position;
     }
 
-
+    /**
+     * this list has the user
+     * @param user
+     * @return
+     */
     public boolean hasUser(User user){
         if (list.contains(user)) {
             return true;
@@ -72,6 +83,10 @@ public class RankOwnerProfileList {
         }
     }
 
+    /**
+     * find the user who have the highest score
+     * @return
+     */
     public String  findHigh(){
         Collections.sort(list, new Comparator<User>() {
             @Override
@@ -83,6 +98,10 @@ public class RankOwnerProfileList {
         return list.get(0).getUserName();
     }
 
+    /**
+     * find the user who has the lowest score
+     * @return
+     */
     public String findLow(){
         Collections.sort(list, new Comparator<User>() {
             @Override

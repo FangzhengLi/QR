@@ -74,6 +74,9 @@ public class WhoAlsoScan extends AppCompatActivity {
         });
     }
 
+    /**
+     * show message
+     */
     public void showMessage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("The database does not have the code right now!");

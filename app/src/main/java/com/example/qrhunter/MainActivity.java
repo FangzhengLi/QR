@@ -189,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
+
+    /**
+     * this method to check the user is owner or not
+     */
     private void notOwner(){
         android.app.AlertDialog dlg =new android.app.AlertDialog.Builder(MainActivity.this)
                 .setTitle("NOT Owner")
@@ -230,6 +234,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.show();
 
     }
+
+    /**
+     * this method intends to scan a QR code
+     * and then get the code string ,score
+     */
 
     private void scanCode(){
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -338,6 +347,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+    /**
+     * show the message
+     * @param message
+     */
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);

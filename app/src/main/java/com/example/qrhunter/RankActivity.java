@@ -18,6 +18,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This interface has four button to check the button
+ */
+
 public class RankActivity extends AppCompatActivity {
     Button amount,highest,sum,unique;
     Intent intent01,intent02,intent03,intent04;

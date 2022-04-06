@@ -21,7 +21,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-//estimate of user ranking for a total sum of scores of QR codes scanned
+/**
+ * this interface shows user's rank ordered by user's sum codes
+ */
+
 public class RankSum extends AppCompatActivity {
     private ListView userList;
     private ArrayAdapter<User> userAdapter;

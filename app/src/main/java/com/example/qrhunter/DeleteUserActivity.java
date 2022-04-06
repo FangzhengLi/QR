@@ -24,7 +24,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-// can delete other player, but cannot delete self
+/**
+ * This file is mainly responsible for owner to delete User in the database.
+ */
 public class DeleteUserActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
@@ -32,9 +34,6 @@ public class DeleteUserActivity extends AppCompatActivity {
     private ArrayList<String> userDataList;
     private ArrayAdapter<String> userAdapter;
     private int chosenLine=0;
-   // private String user = "test";
-
-    //不能删除自己
 
 
     @Override
@@ -63,6 +62,13 @@ public class DeleteUserActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * owner can click long on the user item to check the user detail
+         * but it only check the highest and lowest
+         * can not delete in the detail interface
+         * and can not comment it, if want can go to the profile or search the code
+         */
+
        userList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -84,6 +90,12 @@ public class DeleteUserActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        /**
+         * the way to delete a user is that:
+         * owner firstly click a user
+         * then click Delete Button
+         */
 
         Button deleteButton = findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +127,9 @@ public class DeleteUserActivity extends AppCompatActivity {
             }
 
         });
+        /**
+         * make the list show by using data from database
+         */
 
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
