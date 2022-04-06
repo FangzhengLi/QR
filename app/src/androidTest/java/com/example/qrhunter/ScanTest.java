@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class SearchByCode {
+public class ScanTest {
     /**
      * Test class for RankActivity. All the UI tests are written here. Robotium test framework is
      used
@@ -43,26 +43,43 @@ public class SearchByCode {
     }
 
     /**
-     * Check whether activity correctly switched
-     * 包括back 的button
+     * test search by code's scan
      */
     @Test
-    public void checkCode() {
+    public void testSearchCode() {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        //solo.clickOnText();
         solo.clickOnButton("Search By code");
         solo.assertCurrentActivity("Wrong Activity", ScanActivity.class);
+    }
 
+    /**
+     * test play's scan
+     */
+    @Test
+    public void testPlay(){
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnButton("Play");
+        solo.assertCurrentActivity("Wrong Activity", ScanActivity.class);
+    }
+
+
+    /**
+     * test sign in 's scan
+     */
+
+    @Test
+    public void testSignin(){
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnButton("Sign Out");
+        solo.clickOnText("Confirm");
+        solo.assertCurrentActivity("Wrong Activity",SigninActivity.class);
+        solo.clickOnText("Sign in by QR code");
+        solo.assertCurrentActivity("Wrong Activity", ScanActivity.class);
     }
 
 
 
 
-
-    //@Test
-    public void checkUser() {
-
-    }
 
 
 

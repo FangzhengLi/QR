@@ -22,8 +22,8 @@ public class ProfileTest {
      */
     private Solo solo;
     @Rule
-    public ActivityTestRule<MainActivity> rule =
-            new ActivityTestRule<>(MainActivity.class, true, true);
+    public ActivityTestRule<UserCode> rule =
+            new ActivityTestRule<>(UserCode.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
@@ -50,17 +50,14 @@ public class ProfileTest {
 
     @Test
     public void checkSwitchAndContent(){
-        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.txtAccount), "123");
-        //solo.enterText((EditText) solo.getView(R.id.txtPassword), "123");
-        solo.clickOnButton("Sign In");
-        solo.clickOnButton("My Profile"); //Click ADD CITY Button
         solo.assertCurrentActivity("Wrong Activity",UserCode.class);
         assertTrue(solo.searchText("Total Score"));
         assertTrue(solo.searchText("Number"));
-        assertTrue(solo.searchText("e34c6437-2d11-4bd7-90ce-d36ff32a419e"));
+        solo.clickInList(0);
+        solo.assertCurrentActivity("Wrong Activity",SelectedQrActivity.class);
+        assertTrue(solo.searchButton("Location"));
         solo.clickOnButton("back");
-        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.assertCurrentActivity("Wrong Activity", UserCode.class);
 
     }
 

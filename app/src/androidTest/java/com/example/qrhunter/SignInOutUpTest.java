@@ -54,18 +54,20 @@ public class SignInOutUpTest {
         solo.clickOnText("Sign Up");
         solo.assertCurrentActivity("Wrong Activity", SignupActivity.class);
         solo.enterText((EditText) solo.getView(R.id.txtUserSignup),  "new");
-        //solo.enterText((EditText) solo.getView(R.id.txtPasswordSignup), "new01");
         solo.clickOnButton("Sign Up");
-        solo.assertCurrentActivity("Wrong Activity", SigninActivity.class);
+        solo.clickOnText("Dismiss");
+        solo.clickOnText("Now to sign in");
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
     }
 
     @Test
     public void checkSignInAndOut(){
-        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.txtAccount), "1234");
-        //solo.enterText((EditText) solo.getView(R.id.txtPassword), "1234");
-        solo.clickOnButton("Sign In"); //Click ADD CITY Button
-        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnText("Sign Up");
+        solo.enterText((EditText) solo.getView(R.id.txtUserSignup),  "new1");
+        solo.clickOnButton("Sign Up");
+        solo.clickOnText("Dismiss");
+        solo.clickOnText("Now to sign in");
+
         solo.clickOnButton("Sign Out");
         solo.clickOnText("Confirm");
         solo.assertCurrentActivity("Wrong Activity", SigninActivity.class);
